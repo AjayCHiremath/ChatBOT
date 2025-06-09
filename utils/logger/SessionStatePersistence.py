@@ -19,7 +19,7 @@ def save_session_state():
 
 def load_session_state():
     # session_id = get_session_id()
-    session_id = "Ajay"
+    session_id = get_session_id()
 
     filename = f"logs/session_states/{session_id}.json"
     if os.path.exists(filename):
