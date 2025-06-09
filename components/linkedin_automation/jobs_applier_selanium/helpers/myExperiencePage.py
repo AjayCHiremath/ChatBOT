@@ -299,7 +299,8 @@ def fill_experience_or_education_sections(driver, wait, short_wait, data_list, s
                                 print(f"✔ Set '{field_key}' checkbox for {section_name}{index}.")
                         #---------------------{Handle other text field types}----------------------
                         else:
-                            element_xpath = f"{section_xpath}//{'textarea' if field_key == 'roleDescription' else 'input'}[contains(@id,'--{field_key}')]"
+                            # Not worked because it was school and not schoolName
+                            element_xpath = f"{section_xpath}//textarea[contains(@id,'--{field_key}')] | {section_xpath}//input[contains(@id,'--{field_key}')]"
                             interact_with(driver=driver, wait=wait, by=By.XPATH, elem_name=element_xpath, value=entry[field_key], field_key=field_key, elem_type=field_type, log_base=log_base, echo=echo)
                         print(f"✔ Finished {section_name}{index}.")
                     except Exception:
