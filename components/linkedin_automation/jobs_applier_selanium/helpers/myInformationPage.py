@@ -189,6 +189,7 @@ def handle_radio(driver, wait, all_ids, field_id, value, retry, log_base="logs/j
                     used_id = id_option
                     break  # Found element
             if cleared:
+                used_id = id_option
                 break
 
         if not cleared:
@@ -238,6 +239,7 @@ def handle_checkbox(driver, wait, all_ids, field_id, value, retry, log_base="log
                     used_id = id_option
                     break
             if cleared:
+                used_id = id_option
                 break
 
         if not cleared:
@@ -250,8 +252,8 @@ def handle_checkbox(driver, wait, all_ids, field_id, value, retry, log_base="log
         print(f"{'🔁 Retried' if retry else '✔'} Checkbox '{used_id}' set to '{value}'")
         return True
 
-    except Exception as e:
-        print(f"⚠️ Unexpected error in handle_checkbox: {e}")
+    except Exception:
+        print(f"⚠️ Unexpected error in handle_checkbox")
     return False
 
 #-------------------{Dispatcher to call the correct handler based on field type}---------------------------

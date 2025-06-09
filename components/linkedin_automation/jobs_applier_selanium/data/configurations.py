@@ -20,10 +20,13 @@ section_map_data_preprocessing = {
 
 # === Setup ===
 profile = {
-    "email": st.session_state.get("email_ext", None),
-    "password": st.session_state.get("password_ext", None),
+    # "email": st.session_state.get("email_ext", None),
+    # "password": st.session_state.get("password_ext", None),
+    "email": "ramu@gmail.com",
+    "password": "SweepEnd4091##",
     "mobie": "+44 7459146448"
 }
+
 #------------------ Define dummy data for each field ----------------
 my_information_data = {
     "source--source": {
@@ -164,7 +167,7 @@ my_information_data = {
     },
     "phoneNumber--countryPhoneCode": {
         "type": "text",
-        "value": "+44",
+        "value": "United Kingdom (+44)",
         "alternate_ids": [
             "country-phone-code",
         ],
@@ -263,9 +266,41 @@ my_experience_data = {
             "attachments": r"C:\Users\ajayc\Downloads\Ajay Hiremath Other Work Experience.docx"
         }
     ],    
-    "languages": ["English"],
-    "skills": ["Python","AWS","PySpark"],
-    "resume": "/path/to/test_resume.pdf"  # Replace with an actual path.
+    "languages": [
+        {
+        "language": "English",
+        "native": True,
+        "8c5fc5940f0b01f097f087dbc3009062": "Fluent"
+        },
+        {
+        "language": "French",
+        "native": False,
+        "8c5fc5940f0b01f097f087dbc3009062": "Intermediate"
+        },
+    ],
+    "skills-section": [
+        {
+        "skills": ["Python", "SQL", "R", "Pandas", "NumPy", "Geopandas", "Matplotlib", "Seaborn", "Plotly", 
+                   "Power BI", "R Shiny", "OpenCV", "Power Automate", "TensorFlow", "PyTorch", 
+                   "Scikit-Learn", "SHAP", "XGBoost", "AdaBoost", "Lambda", "SageMaker", 
+                   "Glue", "EC2", "S3", "API Gateway", "Redshift", "Spark", "Hadoop", 
+                   "Hive", "Kafka", "Flume", "HBase", "Distributions", "Multivariate Analysis", 
+                   "GLMs", "Hypothesis Testing", "A/B Testing", "Chi-Square", "ANOVA", 
+                   "T-Tests", "ARIMA", "SARIMA", "SARIMAX", "VARMAX", "Prophet", 
+                   "Seasonal Decomposition", "Rolling Statistics", "SpaCy", "NLTK", 
+                   "GANs", "LLMs", "Prompt Engineering", "RAG", "Multimodal AI", "AI Agents", 
+                   "LangChain", "LCEL", "Hugging Face", "FAISS", "Chroma", "Pinecone", "Astra DB", 
+                   "Git", "Flask", "Databricks", "Streamlit", "Predictive Modelling", "Computer Vision", 
+                   "NLP", "Fraud Detection", "Healthcare Analytics", "Geospatial Modelling", 
+                   "Retail & E-commerce", "Insurance", "Customer Analytics", "Real-Time Analytics", 
+                   "Distributed Computing"]
+        },
+    ],
+    "resume": [
+        {
+        "attachments" : r"C:\Users\ajayc\Downloads\Ajay Hiremath  Resume.pdf",
+        },
+    ],
 }
 
 workexperience_field_mapping = {"jobTitle": "text",
@@ -281,16 +316,16 @@ workexperience_field_mapping = {"jobTitle": "text",
                                "roleDescription": "text"
                                }
 
-certification_field_mapping = {"certification": "multiselect",
-                        "certificationNumber": "text",
-                        "issuedDate-dateSectionDay": "date",
-                        "issuedDate-dateSectionMonth": "date",
-                        "issuedDate-dateSectionYear": "date",
-                        "expirationDate-dateSectionDay": "date",
-                        "expirationDate-dateSectionMonth": "date",
-                        "expirationDate-dateSectionYear": "date",
-                        "attachments": "file"
-                        }
+certification_field_mapping = {"certification": "listbox",
+                              "certificationNumber": "text",
+                              "issuedDate-dateSectionDay": "date",
+                              "issuedDate-dateSectionMonth": "date",
+                              "issuedDate-dateSectionYear": "date",
+                              "expirationDate-dateSectionDay": "date",
+                              "expirationDate-dateSectionMonth": "date",
+                              "expirationDate-dateSectionYear": "date",
+                              "attachments": "file"
+                              }
 
 education_field_mapping = {"schoolName": "text",
                            "degree": "listbox",
@@ -303,3 +338,16 @@ education_field_mapping = {"schoolName": "text",
                            "endDate-lastYearAttended-dateSectionMonth": "date",
                            "endDate-lastYearAttended-dateSectionYear": "date"
                            }
+language_field_mapping = {
+    "language": "listbox",
+    "native": "checkbox",
+    "8c5fc5940f0b01f097f087dbc3009062": "listbox"
+}
+
+skill_field_mapping = {
+    "skills": "multiselect"
+}
+
+resume_field_mapping = {
+    "attachments": "file"
+}

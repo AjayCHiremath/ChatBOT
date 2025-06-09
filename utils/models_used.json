@@ -1,0 +1,6 @@
+{
+  "question_reframer": "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+  "context_summarizer": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
+  "critique": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B-free",
+  "embeddings": "togethercomputer/m2-bert-80M-8k-retrieval"
+}
