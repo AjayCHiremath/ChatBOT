@@ -5,7 +5,8 @@ from langchain_core.messages.utils import count_tokens_approximately
 
 from utils.logger.EventLogger import log_message
 from ai.pdf_summarizer.memory.Memory import get_memory
-from utils.GLOBALVARIABLES import MAX_TOKENS_CHAT_HISTORY
+
+from utils.global_variables import MAX_TOKENS_CHAT_HISTORY
 
 # ---{ Helper function to trim chat history }---
 def build_trim_step():
