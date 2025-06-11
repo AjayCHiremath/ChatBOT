@@ -1,4 +1,3 @@
-
 📚✨ ChatBOT Project – Documentation ✨📚
 
 Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built with 💡 **LangChain**, 🚀 **Streamlit**, and 🤖 **Together.ai**! This system features token-level streaming, plug-and-play models/chains, and is accessible via a live demo.
@@ -10,64 +9,66 @@ Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built w
 ──────────────────────────────────────────────
 
 📂 CHATBOT/
-├── ChatBotApp.py                      # 🚀 Main app entry point
-├── .gitignore                         # 🛑 Specifies files/folders ignored by Git
-├── README.md                          # 📖 Project documentation
-├── requirements.txt                   # 🛠️ Python dependencies
-├── .env                               # 🔐 Environment variables
+├── ChatBotApp.py                        # 🚀 Main app entry point
+├── .gitignore                           # 🛑 Specifies files/folders ignored by Git
+├── README.md                            # 📖 Project documentation
+├── requirements.txt                     # 🛠️ Python dependencies
+├── .env                                 # 🔐 Environment variables
 
 ├── .streamlit/
-│   └── config.toml                    # 🎨 Streamlit theme configuration
+│   └── config.toml                      # 🎨 Streamlit theme configuration
 
 ├── ai/
 │   └── pdf_summarizer/
 │       ├── chains/
-│       │   └── Chain.py               # 🔗 Conversation chain manager
+│       │   └── Chain.py                 # 🔗 Conversation chain manager
 │       ├── data_ingestion/
-│       │   ├── DataLoaders.py         # 📥 Loads documents
-│       │   ├── DocumentSplitters.py   # ✂️ Splits PDFs
-│       │   └── VectorEmbeddings.py    # 🧩 Generates embeddings
+│       │   ├── DataLoaders.py           # 📥 Loads documents
+│       │   ├── DocumentSplitters.py     # ✂️ Splits PDFs
+│       │   └── VectorEmbeddings.py      # 🧩 Generates embeddings
 │       ├── memory/
-│       │   └── Memory.py              # 🧠 Stores conversation memory
+│       │   └── Memory.py                # 🧠 Stores conversation memory
 │       ├── models/
-│       │   ├── ModelLoader.py         # 📦 Loads AI models
-│       │   └── OutputParsers.py       # 📝 Parses model outputs
+│       │   ├── ModelLoader.py           # 📦 Loads AI models
+│       │   └── OutputParsers.py         # 📝 Parses model outputs
 │       ├── prompts/
-│       │   └── Prompts.py             # ✍️ Prompt templates
+│       │   └── Prompts.py               # ✍️ Prompt templates
 │       ├── rag/
-│       │   └── Retrivers.py           # 🔍 Retrieves relevant context
+│       │   └── Retrivers.py             # 🔍 Retrieves relevant context
 │       ├── tools/
-│       │   └── ModelConnections.py    # 🔗 Integrates AI modules & S3
+│       │   └── ModelConnections.py      # 🔗 Integrates AI modules & S3
 │       └── vectorstore/
-│           └── VectorStore.py         # 🗂️ Pinecone vectorstore
+│           └── VectorStore.py           # 🗂️ Pinecone vectorstore
 
 ├── components/
 │   ├── main_ui/
-│   │   ├── Animation2.json            # 🎞️ UI animations
-│   │   ├── background.css             # 🎨 App styling
-│   │   └── Sidebar.py                 # 📑 App sidebar
+│   │   ├── Animation2.json              # 🎞️ UI animations
+│   │   ├── background.css               # 🎨 App styling
+│   │   └── Sidebar.py                   # 📑 App sidebar
 │   ├── pdf_summarizer/
-│   │   ├── PDFSummarizer.py           # 📄 Summarizer logic
+│   │   ├── PDFSummarizer.py             # 📄 Summarizer logic
 │   │   └── ui/
-│   │       ├── ChatHistory.py         # 💬 Chat display
-│   │       ├── ContainerLayout.py     # 📐 Layout management
-│   │       ├── Expander.py            # ➕ Collapsible sections
-│   │       ├── StatusBar.py           # 📊 Session status
-│   │       ├── UserInput.py           # 📝 User queries
+│   │       ├── ChatHistory.py           # 💬 Chat display
+│   │       ├── ContainerLayout.py       # 📐 Layout management
+│   │       ├── Expander.py              # ➕ Collapsible sections
+│   │       ├── StatusBar.py             # 📊 Session status
+│   │       ├── UserInput.py             # 📝 User queries
 │   │       └── avatar/
-│   │           ├── ai.png             # 🤖 AI avatar
-│   │           └── human.png          # 👤 Human avatar
+│   │           ├── ai.png               # 🤖 AI avatar
+│   │           └── human.png            # 👤 Human avatar
 │   └── linkedin_automation/
-│       ├── ChromeJobsApplier.py       # 💼 Automates LinkedIn jobs
+│       ├── ChromeJobsApplier.py         # 💼 Automates LinkedIn jobs
 │       ├── jobs_applier_selanium/
-│       │   ├── data/configurations.py
+│       │   ├── data/
+│       │   │   └── configurations.py
 │       │   ├── helpers/
 │       │   │   ├── ApplyForJobs.py
 │       │   │   ├── DataPreprocess.py
 │       │   │   ├── LoginPage.py
 │       │   │   ├── myExperiencePage.py
 │       │   │   └── myInformationPage.py
-│       │   └── notification/alert.mp3 # 🔔 Alert sound
+│       │   └── notification/
+│       │       └── alert.mp3            # 🔔 Alert sound
 │       ├── ui/
 │       │   ├── ConfirmRefixValues.py
 │       │   ├── ExternalJobDetails.py
@@ -88,23 +89,25 @@ Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built w
 │               └── TerminateProcess.py
 
 ├── logs/
-│   ├── chatbot/                       # 📊 Session logs by user/email/session
-│   └── jobs_applied/linkedin_jobs.xlsx
+│   ├── chatbot/                         # 📊 Session logs by user/email/session
+│   └── jobs_applied/
+│       └── linkedin_jobs.xlsx
 
 ├── utils/
-│   ├── aws_utils.py                   # ☁️ AWS helpers
-│   ├── EnvLoaders.py / EnvReloader.py # 🔄 .env loaders
-│   ├── global_variables.py            # 🌐 Global variables
-│   ├── models_used.json               # 📊 AI models used
+│   ├── aws_utils.py                     # ☁️ AWS helpers
+│   ├── EnvLoaders.py / EnvReloader.py   # 🔄 .env loaders
+│   ├── global_variables.py              # 🌐 Global variables
+│   ├── models_used.json                 # 📊 AI models used
 │   ├── logger/
-│   │   ├── EventLogger.py             # 📝 Event logging
-│   │   ├── SessionId.py               # 🔑 Session management
+│   │   ├── EventLogger.py               # 📝 Event logging
+│   │   ├── SessionId.py                 # 🔑 Session management
 │   │   └── SessionStatePersistence.py
-│   └── login_page/streamlit_login_auth_ui/
-│       ├── aws_utils.py
-│       ├── login.py
-│       ├── login_utils.py
-│       └── widgets.py
+│   └── login_page/
+│       └── streamlit_login_auth_ui/
+│           ├── aws_utils.py
+│           ├── login.py
+│           ├── login_utils.py
+│           └── widgets.py
 
 ──────────────────────────────────────────────
 ## 🔥 Key Features (In Depth)
