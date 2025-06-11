@@ -160,7 +160,7 @@ def send_email_password(driver, wait, profile, verify_password=False, log_base="
         print("⚠️ Error trying to tick consent checkbox.")
 
 # -------------------{Function to play beep sound as an alert}---------------------------
-def alert_user_beep(sound_file='D:/Course/ChatBOT/components/linkedin_automation/jobs_applier_selanium/notification/alert.mp3', repeat=3, log_base="logs/job_application_logs/logs_text/", echo=False):
+def alert_user_beep(sound_file='components/linkedin_automation/jobs_applier_selanium/notification/alert.mp3', repeat=3, log_base="logs/job_application_logs/logs_text/", echo=False):
     try:
         pygame.mixer.init()
         print("⚠️ Alerting user that it requires manual authentication")
