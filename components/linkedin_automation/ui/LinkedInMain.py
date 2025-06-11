@@ -50,6 +50,7 @@ def confirm_refix_buttons(sjs="show_job_settings",cc_keys=["confirm_selections",
 def run_linkedin_jobs_apply(sjs=['show_job_settings','show_job_settings_ext']):
     # ---{ Resume upload section }---
     st.subheader(body="Upload your Resume File (PDF/Docx)", divider=True)
+    st.info("Currently, the application is disabled. As we are testing the application will eb enabled soon.")
     get_resume(disabled=st.session_state.generating_response)
 
     # Simulated "sliding" content
@@ -95,7 +96,7 @@ def run_linkedin_jobs_apply(sjs=['show_job_settings','show_job_settings_ext']):
 
     # Button to toggle
     if st.session_state.get("completed_scrapping", False) and st.session_state.get("resume_file"):
-        if st.button("Apply External JOBS?", icon="🚨", key="toggle_form", use_container_width=True, disabled=st.session_state.generating_response):
+        if st.button("Apply External JOBS?", icon="🚨", key="toggle_form", use_container_width=True, disabled=True or st.session_state.generating_response):
             st.session_state.show_box2 = not st.session_state.show_box2
             st.rerun()
 

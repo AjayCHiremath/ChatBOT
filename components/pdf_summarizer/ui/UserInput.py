@@ -49,13 +49,19 @@ def create_input_form():
 
         # ---------------------{ Embeding and Vector Store Button (📨) }---------------------
         with cols[2]:
-            st.session_state.embed_docs = st.form_submit_button(
-                label="🧩", 
-                disabled=(st.session_state.generating_response or 
+            embed_docs_clicked = st.form_submit_button(
+                label="🧩",
+                disabled=(st.session_state.generating_response or
                           st.session_state.embedding_complete or
-                          not st.session_state.get(f"uploaded_pdfs_{st.session_state.file_upload_key}", False)), 
+                          not st.session_state.get(f"uploaded_pdfs_{st.session_state.file_upload_key}", False)),
                 use_container_width=True
             )
+
+            if embed_docs_clicked:
+                st.session_state.embed_docs = True
+                st.session_state.generating_response = True
+                embed_docs_clicked=False
+                st.rerun()
 
         # ---------------------{ Clear Button (🗑️) }---------------------
         with cols[3]:

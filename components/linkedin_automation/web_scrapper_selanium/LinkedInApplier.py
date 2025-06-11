@@ -10,7 +10,7 @@ from components.linkedin_automation.web_scrapper_selanium.helpers.ScrapeData imp
 from components.linkedin_automation.web_scrapper_selanium.helpers.TerminateProcess import exit_if_stopped
 from utils.logger.EventLogger import log_message
 
-import pyautogui
+# import pyautogui
 import pandas as pd
 import streamlit as st
 import os
@@ -85,19 +85,19 @@ def linkedin_jobs_applier():
         driver = apply_all_filters(driver, wait, short_wait, st.session_state.get("job_settings_backup", {}), log_base, echo)
 
         #-----------------------{ Show confirmation dialog with applied filters }--------------------------
-        all_applied = pyautogui.confirm(
-                text="Did all the filters you wanted were applied?\n",
-                title="✅ Filters Applied",
-                buttons=["Yes","No"]
-            )
+        # all_applied = pyautogui.confirm(
+        #         text="Did all the filters you wanted were applied?\n",
+        #         title="✅ Filters Applied",
+        #         buttons=["Yes","No"]
+        #     )
         
-        if all_applied=="Yes":
-            driver = applied_filters(driver, export_path, log_base, echo)
-        else:
-            corrected = pyautogui.confirm(
-                text="Correct the filters manually and click Okay. (Only when done)\n Don't click on 'Show Results'",
-                title="✅ Corrected Filters",
-                buttons=["Okay"]
-            )
-            if corrected == "Okay":
-                driver = applied_filters(driver, export_path, log_base, echo)
+        # if all_applied=="Yes":
+        driver = applied_filters(driver, export_path, log_base, echo)
+        # else:
+        #     corrected = pyautogui.confirm(
+        #         text="Correct the filters manually and click Okay. (Only when done)\n Don't click on 'Show Results'",
+        #         title="✅ Corrected Filters",
+        #         buttons=["Okay"]
+        #     )
+        #     if corrected == "Okay":
+        #         driver = applied_filters(driver, export_path, log_base, echo)

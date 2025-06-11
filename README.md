@@ -1,60 +1,142 @@
-# LangChain Streamlit ChatBot
 
-A scalable, modular, and real-time chatbot platform powered by **LangChain**, **Streamlit**, and **Ollama**. Built with extensibility in mind, this project serves as a foundation for advanced AI interactions — including agents, tool integrations, multimodal inputs, and dynamic model selection.
+# 📚✨ ChatBOT Project ✨📚
 
----
+Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built with 💡 **LangChain**, 🚀 **Streamlit**, and 🤖 **Together.ai**! This system features token-level streaming, plug-and-play models/chains, and is accessible via a live demo.
 
-## 🔥 Key Features
-
-- **LLama 3** integration via **Ollama** for fast local inference  
-- **Token-level streaming** to simulate real-time assistant typing  
-- **Clean, modular architecture** supporting pluggable models, chains, and prompts  
-- Future-ready structure for:
-  - LangChain Agents (e.g., LangGraph-based planning)
-  - Document loaders, vector search, and RAG
-  - Multimodal interactions (image, PDF, voice)
-  - File tools and dynamic tool use  
+⚠️ **Note:** Both the **LinkedIn automation logic** and parts of the **ChatBOT's core logic** are currently under development. Expect exciting updates soon!
 
 ---
 
 ## 🧱 Project Structure
 
-```bash
-LLMCHATBOT/
-├── ChatBot.py                      # 🚀 Main Streamlit app entry point
-├── .env                            # 🔐 Environment variables
-│
-├── components/                     # 🎨 UI: input form, display, layout
-│   ├── input_form.py
-│   ├── chat_display.py
-│   └── layout.py
-│
-├── prompts/                        # 💬 Prompt templates
-│   ├── default_prompt.py
-│   └── agent_prompt.py
-│
-├── models/                         # 🧠 Model wrappers (Ollama, OpenAI, etc.)
-│   ├── ollama_model.py
-│   └── parser.py
-│
-├── chains/                         # 🔗 LangChain pipelines
-│   └── chat_chain.py
-│
-├── agents/                         # 🕹️ Future enchancement Multi-agent logic (LangGraph, planners)
-│   └── xyz.py
-│
-├── tools/                          # 🧰 Future enchancement  Agent tools (file parsers, search, APIs)
-│   └── xyz.py
-│
-├── config/                         # ⚙️ Future enchancement App/config settings
-│   └── xyz.yaml
-│
-├── utils/                          # 🧼 Reusable utilities
-│   ├── env_loader.py
-│   └── streaming_callback.py
-│
-└── README.md
+```markdown
+📂 CHATBOT/
+├── ChatBotApp.py                        # 🚀 Main app entry point
+├── .gitignore                           # 🛑 Specifies files/folders ignored by Git
+├── README.md                            # 📖 Project documentation
+├── requirements.txt                     # 🛠️ Python dependencies
+├── .env                                 # 🔐 Environment variables
+
+├── .streamlit/
+│   └── config.toml                      # 🎨 Streamlit theme configuration
+
+├── ai/
+│   └── pdf_summarizer/
+│       ├── chains/
+│       │   └── Chain.py                 # 🔗 Conversation chain manager
+│       ├── data_ingestion/
+│       │   ├── DataLoaders.py           # 📥 Loads documents
+│       │   ├── DocumentSplitters.py     # ✂️ Splits PDFs
+│       │   └── VectorEmbeddings.py      # 🧩 Generates embeddings
+│       ├── memory/
+│       │   └── Memory.py                # 🧠 Stores conversation memory
+│       ├── models/
+│       │   ├── ModelLoader.py           # 📦 Loads AI models
+│       │   └── OutputParsers.py         # 📝 Parses model outputs
+│       ├── prompts/
+│       │   └── Prompts.py               # ✍️ Prompt templates
+│       ├── rag/
+│       │   └── Retrivers.py             # 🔍 Retrieves relevant context
+│       ├── tools/
+│       │   └── ModelConnections.py      # 🔗 Integrates AI modules & S3
+│       └── vectorstore/
+│           └── VectorStore.py           # 🗂️ Pinecone vectorstore
+
+├── components/
+│   ├── main_ui/
+│   │   ├── Animation2.json              # 🎞️ UI animations
+│   │   ├── background.css               # 🎨 App styling
+│   │   └── Sidebar.py                   # 📑 App sidebar
+│   ├── pdf_summarizer/
+│   │   ├── PDFSummarizer.py             # 📄 Summarizer logic
+│   │   └── ui/
+│   │       ├── ChatHistory.py           # 💬 Chat display
+│   │       ├── ContainerLayout.py       # 📐 Layout management
+│   │       ├── Expander.py              # ➕ Collapsible sections
+│   │       ├── StatusBar.py             # 📊 Session status
+│   │       ├── UserInput.py             # 📝 User queries
+│   │       └── avatar/
+│   │           ├── ai.png               # 🤖 AI avatar
+│   │           └── human.png            # 👤 Human avatar
+│   └── linkedin_automation/
+│       ├── ChromeJobsApplier.py         # 💼 Automates LinkedIn jobs
+│       ├── jobs_applier_selanium/
+│       │   ├── data/
+│       │   │   └── configurations.py
+│       │   ├── helpers/
+│       │   │   ├── ApplyForJobs.py
+│       │   │   ├── DataPreprocess.py
+│       │   │   ├── LoginPage.py
+│       │   │   ├── myExperiencePage.py
+│       │   │   └── myInformationPage.py
+│       │   └── notification/
+│       │       └── alert.mp3            # 🔔 Alert sound
+│       ├── ui/
+│       │   ├── ConfirmRefixValues.py
+│       │   ├── ExternalJobDetails.py
+│       │   ├── LinkedInJobDetails.py
+│       │   ├── LinkedInMain.py
+│       │   ├── LoginPage.py
+│       │   └── ResumeUploader.py
+│       └── web_scrapper_selanium/
+│           ├── LinkedInApplier.py
+│           └── helpers/
+│               ├── AppLogin.py
+│               ├── ApplyJobFilters.py
+│               ├── FillJobFilters.py
+│               ├── JobSearch.py
+│               ├── PageChange.py
+│               ├── ScrapeData.py
+│               ├── ScrapeHelpers.py
+│               └── TerminateProcess.py
+
+├── logs/
+│   ├── chatbot/                         # 📊 Session logs by user/email/session
+│   └── jobs_applied/
+│       └── linkedin_jobs.xlsx
+
+├── utils/
+│   ├── aws_utils.py                     # ☁️ AWS helpers
+│   ├── EnvLoaders.py / EnvReloader.py   # 🔄 .env loaders
+│   ├── global_variables.py              # 🌐 Global variables
+│   ├── models_used.json                 # 📊 AI models used
+│   ├── logger/
+│   │   ├── EventLogger.py               # 📝 Event logging
+│   │   ├── SessionId.py                 # 🔑 Session management
+│   │   └── SessionStatePersistence.py
+│   └── login_page/
+│       └── streamlit_login_auth_ui/
+│           ├── aws_utils.py
+│           ├── login.py
+│           ├── login_utils.py
+│           └── widgets.py
 ```
+
+---
+
+## 🔥 Key Features (In Depth)
+
+✨ **Modular AI Components**
+- Designed to separate logic and AI modules for easy testing, scalability, and maintenance.
+
+📄 **Document Summarizer**
+- Ingests and splits PDFs into chunks.
+- Embeds text using Together AI’s `m2-bert-80M-8k-retrieval`.
+- Stores embeddings in Pinecone.
+- Uses prompt engineering, RAG, memory, and chains for interactive Q&A.
+
+🤖 **LinkedIn Job Application Automator (Educational Purposes Only)**
+- Selenium automation to scrape and apply to LinkedIn/Workday jobs.
+- LLMs (in progress) for dynamic question responses and resume customization.
+
+🔒 **Security & Stability**
+- Authentication with login page.
+- Input validation, session management, content moderation.
+- Rate limiting to avoid overload.
+
+🗂️ **Session & User Logging**
+- Logs stored in S3 by session and user.
+- Supports easy monitoring and debugging.
 
 ---
 
@@ -65,8 +147,6 @@ LLMCHATBOT/
 ```bash
 pip install -r requirements.txt
 ```
-
-> Ensure Ollama is installed and running locally.
 
 ---
 
@@ -79,33 +159,38 @@ LANGCHAIN_API_KEY=your-key
 LANGCHAIN_TRACING_V2=true
 LANGCHAIN_PROJECT=your-project
 LANGSMITH_ENDPOINT=https://api.smith.langchain.com
+
+PINECONE_API_KEY=your-key
+PINECONE_INDEX=your-index
+PINECONE_REGION=your-region
+
+TOGETHER_API_KEY=your-key
+TOGETHER_BASE_URL=https://api.together.ai
+
+AWS_ACCESS_KEY_ID=your-aws-key
+AWS_SECRET_ACCESS_KEY=your-aws-secret
+AWS_DEFAULT_REGION=your-region
+MY_S3_BUCKET=your-bucket
+
+SMTP_SENDER_EMAIL=your-email
+SMTP_APP_PASSWORD=your-app-password
+COMPANY_NAME=your-company-name
 ```
 
 ---
 
-### 3. Pull Model with Ollama
+### 3. Run the App
 
 ```bash
-ollama pull llama3
+streamlit run ChatBotApp.py
 ```
 
 ---
 
-### 4. Run the App
+## 🤝 Contributing
 
-```bash
-streamlit run ChatBot.py
-```
+We welcome contributions! Fork this repo and submit a pull request. 📬
 
 ---
 
-## 🧭 Roadmap
-
-| Module                 | Description |
-|------------------------|-------------|
-| Model Selector         | UI component to switch between models or tools |
-| PDF/Image Summarizer   | Upload and summarize PDFs and images via agents |
-| Retail Insight Agent   | NL query to SQL → data → charts + LLM summary |
-| LangGraph Agents       | Multi-agent orchestration with memory/tool use |
-| Toolkits               | Integrate tools like file parser, web search |
-| Multimodal UI          | Accept image, PDF, text inputs interchangeably |
+🌟 Thank you for exploring ChatBOT! 🌟
