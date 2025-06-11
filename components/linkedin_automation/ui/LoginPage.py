@@ -35,10 +35,10 @@ def login_page(disabled:bool=False, keys=["email", "password",'apply_jobs','stop
             cols_submit1, cols_submit2 = st.columns(2)
 
             # -----{Start applying button}------
-            cols_submit1.button(":rocket: Start Applying for Jobs", key=keys[2],disabled=True or disabled, use_container_width=True)
+            cols_submit1.button(":rocket: Start Applying for Jobs", key=keys[2],disabled=disabled, use_container_width=True)
 
             # -----{Stop applying button}------
-            cols_submit2.button(":x: Stop Applying for Jobs", key=keys[3], disabled=True or not disabled, use_container_width=True)
+            cols_submit2.button(":x: Stop Applying for Jobs", key=keys[3], disabled=not disabled, use_container_width=True)
 
         else:
             # -----{Display error if email is invalid}------
