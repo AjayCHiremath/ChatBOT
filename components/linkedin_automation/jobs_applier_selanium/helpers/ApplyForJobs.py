@@ -8,7 +8,7 @@ from components.linkedin_automation.jobs_applier_selanium.helpers.myInformationP
 from components.linkedin_automation.jobs_applier_selanium.helpers.myExperiencePage import my_experience_form
 
 import time
-import pyautogui
+# import pyautogui
 
 #-------------------{Main application process function}---------------------------
 def start_application_process(profile_data, log_base="logs/job_application_logs/logs_text/", echo=False):
@@ -61,7 +61,7 @@ def start_application_process(profile_data, log_base="logs/job_application_logs/
 
 
         #-------------------{Prompt user for manual verification of submission}---------------------------
-        if pyautogui.confirm(text='Correct??',title='Manual Auth Required',buttons=['Yes', 'No']) == 'Yes':
-            print("✔ User confirmed authentication.")
+        # if pyautogui.confirm(text='Correct??',title='Manual Auth Required',buttons=['Yes', 'No']) == 'Yes':
+        #     print("✔ User confirmed authentication.")
 
-            continue
+            # continue
