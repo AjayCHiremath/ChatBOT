@@ -1,13 +1,15 @@
-📚✨ ChatBOT Project – Documentation ✨📚
+
+# 📚✨ ChatBOT Project – Documentation ✨📚
 
 Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built with 💡 **LangChain**, 🚀 **Streamlit**, and 🤖 **Together.ai**! This system features token-level streaming, plug-and-play models/chains, and is accessible via a live demo.
 
 ⚠️ **Note:** Both the **LinkedIn automation logic** and parts of the **ChatBOT's core logic** are currently under development. Expect exciting updates soon!
 
-──────────────────────────────────────────────
-## 🧱 Project Structure (Detailed)
-──────────────────────────────────────────────
+---
 
+## 🧱 Project Structure (Detailed)
+
+```markdown
 📂 CHATBOT/
 ├── ChatBotApp.py                        # 🚀 Main app entry point
 ├── .gitignore                           # 🛑 Specifies files/folders ignored by Git
@@ -108,10 +110,11 @@ Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built w
 │           ├── login.py
 │           ├── login_utils.py
 │           └── widgets.py
+```
 
-──────────────────────────────────────────────
+---
+
 ## 🔥 Key Features (In Depth)
-──────────────────────────────────────────────
 
 ✨ **Modular AI Components**
 - Designed to separate logic and AI modules for easy testing, scalability, and maintenance.
@@ -135,9 +138,9 @@ Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built w
 - Logs stored in S3 by session and user.
 - Supports easy monitoring and debugging.
 
-──────────────────────────────────────────────
+---
+
 ## ⚙️ Getting Started
-──────────────────────────────────────────────
 
 ### 1. Install Dependencies
 
@@ -188,6 +191,6 @@ streamlit run ChatBotApp.py
 
 We welcome contributions! Fork this repo and submit a pull request. 📬
 
-──────────────────────────────────────────────
+---
+
 🌟 Thank you for exploring ChatBOT! 🌟
-──────────────────────────────────────────────
