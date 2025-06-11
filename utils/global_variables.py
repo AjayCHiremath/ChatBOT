@@ -1,7 +1,7 @@
 from utils.logger.SessionId import get_session_id
 
 # APP LINK
-APP_LINK="http://localhost:8501/"
+APP_LINK="chatbot-and-linkedin-jobs-apply"
 
 # Document chunking
 DOCUMENTS_CHUNK_SIZE = 1200

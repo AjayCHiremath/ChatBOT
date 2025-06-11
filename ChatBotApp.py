@@ -2,8 +2,6 @@
 import streamlit as st
 import os
 import boto3
-import sys
-sys.dont_write_bytecode = True
 
 # ---{ Set PAGE WIDTH }---
 st.set_page_config(page_icon="🦈", layout="wide", initial_sidebar_state="auto")
