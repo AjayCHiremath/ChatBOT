@@ -9,33 +9,41 @@ from components.linkedin_automation.web_scrapper_selanium.helpers.ApplyJobFilter
 from components.linkedin_automation.web_scrapper_selanium.helpers.ScrapeData import scrape_all_jobs
 from components.linkedin_automation.web_scrapper_selanium.helpers.TerminateProcess import exit_if_stopped
 from utils.logger.EventLogger import log_message
+from utils.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
 
-# import pyautogui
+import pyautogui
 import pandas as pd
 import streamlit as st
 import os
 import random
 
 #-----------------------{ Apply filter }--------------------------
-def applied_filters(driver, export_path, log_base="logs/login_page_logs/", echo=False):
-    wait, short_wait = WebDriverWait(driver, 1), WebDriverWait(driver, 0.5)
-
+def applied_filters(driver, wait, short_wait, export_path, log_base="logs/login_page_logs/", echo=False):
     driver = apply_filters(driver, log_base, echo)
     driver, df = scrape_all_jobs(driver, wait, short_wait, log_base, echo)
 
-    update_or_append_excel(df, export_path)
+    update_or_append_excel(df, export_path, log_base, echo)
     log_message(f"📦 Exported data to: {export_path}", log_file=log_base, echo=echo)
     return driver
 
 #-----------------------{ Add Scrapped jobs in excel }--------------------------
-def update_or_append_excel(df_new, export_path):
+def update_or_append_excel(df_new, export_path, log_base="logs/login_page_logs/", echo=False):
     os.makedirs(os.path.dirname(export_path), exist_ok=True)
     df_new = pd.DataFrame(df_new)
+    # Ensure "Job ID" exists
+    if "Job ID" not in df_new.columns:
+        log_message("No 'Job ID' column found in the DataFrame. Please check the data.", log_file=log_base, echo=echo)
+        return 
     df_new.set_index("Job ID", inplace=True)
 
+    read_file = read_auth_file_from_s3(
+        bucket_name=os.getenv("MY_S3_BUCKET"),
+        object_key=export_path
+    )
+
     # If file exists, load and update
-    if os.path.exists(export_path):
-        df_existing = pd.read_excel(export_path)
+    if read_file:
+        df_existing = pd.read_excel(read_file)
         df_existing.set_index("Job ID", inplace=True)
 
         # Update or append
@@ -43,6 +51,11 @@ def update_or_append_excel(df_new, export_path):
         df_updated.update(df_new)
     else:
         df_updated = df_new
+        write_auth_file_to_s3(
+            authorized_user_data=df_updated,
+            bucket_name=os.getenv("MY_S3_BUCKET"),
+            object_key=export_path
+        )
 
     # Save back to file
     df_updated.reset_index().to_excel(export_path, index=False)
@@ -56,7 +69,7 @@ def linkedin_jobs_applier():
 
     #-----------------------{ Initialize Chrome WebDriver }--------------------------
     driver = webdriver.Chrome()
-    wait = WebDriverWait(driver, 5)
+    wait = WebDriverWait(driver, 10)
 
     #-----------------------{ Log into LinkedIn }--------------------------
     login_to_linkedin(driver, log_base, echo)
@@ -69,35 +82,36 @@ def linkedin_jobs_applier():
         random.shuffle(job_details)
 
     for job_name in job_details:
+        #-----------------------{ Stop if user has clicked stop }--------------------------
         exit_if_stopped(context="🛑 Terminating Browser: ALL FILTERS BTN CLICK", driver=driver, log_file=log_base, echo=echo)
 
         #-----------------------{ Open LinkedIn Jobs Page and Search }--------------------------
         driver.get("https://www.linkedin.com/jobs/")
         
-        driver = go_to_job_search(driver=driver, job_keyword=job_name,
+        driver = go_to_job_search(driver=driver, wait=wait, job_keyword=job_name,
                                         log_base=log_base, echo=echo)
 
         #-----------------------{ Click "All filters" }--------------------------
-        driver = click_all_filters_button(driver, log_base, echo)
+        driver = click_all_filters_button(driver, wait, log_base, echo)
 
         #-----------------------{ Select all filters from session }--------------------------
         short_wait = WebDriverWait(driver, 0.5)
         driver = apply_all_filters(driver, wait, short_wait, st.session_state.get("job_settings_backup", {}), log_base, echo)
 
         #-----------------------{ Show confirmation dialog with applied filters }--------------------------
-        # all_applied = pyautogui.confirm(
-        #         text="Did all the filters you wanted were applied?\n",
-        #         title="✅ Filters Applied",
-        #         buttons=["Yes","No"]
-        #     )
+        all_applied = pyautogui.confirm(
+                text="Did all the filters you wanted were applied?\n",
+                title="✅ Filters Applied",
+                buttons=["Yes","No"]
+            )
         
-        # if all_applied=="Yes":
-        driver = applied_filters(driver, export_path, log_base, echo)
-        # else:
-        #     corrected = pyautogui.confirm(
-        #         text="Correct the filters manually and click Okay. (Only when done)\n Don't click on 'Show Results'",
-        #         title="✅ Corrected Filters",
-        #         buttons=["Okay"]
-        #     )
-        #     if corrected == "Okay":
-        #         driver = applied_filters(driver, export_path, log_base, echo)
+        if all_applied=="Yes":
+            driver = applied_filters(driver, wait, short_wait, export_path, log_base, echo)
+        else:
+            corrected = pyautogui.confirm(
+                text="Correct the filters manually and click Okay. (Only when done)\n Don't click on 'Show Results'",
+                title="✅ Corrected Filters",
+                buttons=["Okay"]
+            )
+            if corrected == "Okay":
+                driver = applied_filters(driver, wait, short_wait, export_path, log_base, echo)

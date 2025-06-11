@@ -8,7 +8,7 @@ from components.linkedin_automation.jobs_applier_selanium.helpers.ApplyForJobs i
 
 
 # ---{ Start external job application by reading and cleaning data }---
-def start_external_apply(import_path="D:/Course/ChatBOT/logs/jobs_applied/linkedin_jobs.xlsx", log_base="logs/job_application_logs/logs_text/", echo=False):
+def start_external_apply(import_path="logs/jobs_applied/linkedin_jobs.xlsx", log_base="logs/job_application_logs/logs_text/", echo=False):
     
     # ---{ Read job data from Excel }---
     jobs_data = pd.read_excel(io=import_path, index_col=0)

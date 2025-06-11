@@ -13,10 +13,9 @@ from utils.logger.EventLogger import log_message
 from components.linkedin_automation.web_scrapper_selanium.helpers.TerminateProcess import exit_if_stopped
 
 # -----{ Click the "All filters" button and wait for the panel to load }------
-def click_all_filters_button(driver, log_base="logs/login_page_logs/", echo=False):
+def click_all_filters_button(driver, wait, log_base="logs/login_page_logs/", echo=False):
     if st.session_state.applying_jobs:
         try:
-            wait = WebDriverWait(driver, 10)
             filters_btn_xpath = "//button[normalize-space()='All filters']"
             wait.until(EC.element_to_be_clickable((By.XPATH, filters_btn_xpath))).click()
             time.sleep(1)

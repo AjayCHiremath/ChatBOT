@@ -6,16 +6,14 @@ import streamlit as st
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from utils.logger.EventLogger import log_message
 
 
 # -----{ Input job title into LinkedIn search bar }------
-def input_job_title(driver, job_keyword, log_base="logs/login_page_logs/", echo=False):
+def input_job_title(driver, wait, job_keyword, log_base="logs/login_page_logs/", echo=False):
     if st.session_state.applying_jobs:
         try:
-            wait = WebDriverWait(driver, 4)
             log_message(f"⌨️ Typing job title: {job_keyword}", log_file=log_base, echo=echo)
 
             job_input_xpath = "//input[@aria-label='Search by title, skill, or company' and not(@disabled)]"
@@ -39,10 +37,9 @@ def input_job_title(driver, job_keyword, log_base="logs/login_page_logs/", echo=
 
 
 # -----{ Input job location into LinkedIn search bar }------
-def input_location(driver, location_keyword, log_base="logs/login_page_logs/", echo=False):
+def input_location(driver, wait, location_keyword, log_base="logs/login_page_logs/", echo=False):
     if st.session_state.applying_jobs:
         try:
-            wait = WebDriverWait(driver, 4)
             log_message(f"⌨️ Typing job location: {location_keyword}", log_file=log_base, echo=echo)
 
             #-----------------------{ Locate location input }--------------------------
@@ -73,7 +70,7 @@ def input_location(driver, location_keyword, log_base="logs/login_page_logs/", e
 
 
 # -----{ Complete flow to open job search and apply filters }------
-def go_to_job_search(driver, job_keyword="", log_base="logs/login_page_logs/", echo=False):
+def go_to_job_search(driver, wait, job_keyword="", log_base="logs/login_page_logs/", echo=False):
     if st.session_state.applying_jobs:
         try:
             #-----------------------{ Extract search location safely }--------------------------
@@ -86,8 +83,8 @@ def go_to_job_search(driver, job_keyword="", log_base="logs/login_page_logs/", e
                     location_keyword = search_loc.split(',')[0].strip()
             
             # -----{ Fill job title and location fields }------
-            driver = input_job_title(driver, job_keyword, log_base, echo)
-            driver = input_location(driver, location_keyword, log_base, echo)
+            driver = input_job_title(driver, wait, job_keyword, log_base, echo)
+            driver = input_location(driver, wait, location_keyword, log_base, echo)
             
             # -----{ Log search activity }------
             log_message(f"🔍 Searched for: {job_keyword} in {location_keyword}",

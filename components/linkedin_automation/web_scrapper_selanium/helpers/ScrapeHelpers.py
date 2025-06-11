@@ -18,10 +18,10 @@ def safe_get_text(driver, short_wait, by, selector, log_base="logs/login_page_lo
     try:
         element = short_wait.until(EC.presence_of_element_located((by, selector)))
         text = element.text.strip()
-        return driver, short_wait, text if text else None
+        return driver,  text if text else None
     except (TimeoutException, NoSuchElementException) as e:
         log_message(f"⚠️ safe_get_text failed for {selector}: {e}", log_file=log_base, echo=echo)
-        return driver, short_wait, None
+        return driver,  None
 
 
 # ------------------------------{Extract Company Name with Fallbacks}------------------------------
@@ -41,12 +41,12 @@ def extract_company_name(driver, short_wait, log_base="logs/login_page_logs/", e
             el = short_wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, selector)))
             company = el.text.strip()
             if company:
-                return driver, short_wait, company
+                return driver,  company
         except (TimeoutException, NoSuchElementException):
             continue
 
     log_message("⚠️ Company name not found using known selectors", log_base, echo)
-    return driver, short_wait, None
+    return driver,  None
 
 
 # ------------------------------{Extract About Company Section with Fallbacks}------------------------------
@@ -59,7 +59,7 @@ def extract_about_company(driver, wait, short_wait, log_base="logs/login_page_lo
         div_inside = WebDriverWait(about_section, 2).until(
             lambda el: el.find_element(By.CSS_SELECTOR, 'div')
         )
-        return driver, wait, short_wait, div_inside.text.strip()
+        return driver,  div_inside.text.strip()
     except Exception as e:
         log_message(f"⚠️ Primary About selector failed: {e}", log_base, echo)
 
@@ -68,7 +68,7 @@ def extract_about_company(driver, wait, short_wait, log_base="logs/login_page_lo
         about_section_fallback = short_wait.until(
             EC.presence_of_element_located((By.XPATH, '//section[contains(@class, "about-the-company")]'))
         )
-        return driver, wait, short_wait, about_section_fallback.text.strip()
+        return driver,  about_section_fallback.text.strip()
     except TimeoutException:
         pass
     except Exception as e:
@@ -79,13 +79,13 @@ def extract_about_company(driver, wait, short_wait, log_base="logs/login_page_lo
         about_legacy = short_wait.until(
             EC.presence_of_element_located((By.CSS_SELECTOR, 'div.show-more-less-html__markup'))
         )
-        return driver, wait, short_wait, about_legacy.text.strip()
+        return driver,  about_legacy.text.strip()
     except TimeoutException:
         pass
     except Exception as e:
         log_message(f"⚠️ Fallback 2 failed: {e}", log_file=log_base, echo=echo)
 
-    return driver, wait, short_wait, None
+    return driver,  None
 
 
 # ------------------------------{Extract Application Info: Type, Label, Link}------------------------------
@@ -120,14 +120,14 @@ def extract_application_info(driver, wait, short_wait, log_base="logs/login_page
                             external_link = driver.current_url
                             driver.close()
                             driver.switch_to.window(original_window)
-                            return driver, wait, short_wait, {
+                            return driver,  {
                                 "Application Type": "External",
                                 "Application Label": aria_label.strip(),
                                 "Application Link": external_link
                             }
             except Exception as e:
                 log_message(f"⚠️ Failed to open external application link: {e}", log_base, echo)
-                return driver, wait, short_wait, {
+                return driver,  {
                     "Application Type": "External",
                     "Application Label": aria_label.strip(),
                     "Application Link": None
@@ -135,14 +135,14 @@ def extract_application_info(driver, wait, short_wait, log_base="logs/login_page
 
         # Easy Apply (stays on LinkedIn)
         elif 'easy apply' in aria_label.lower():
-            return driver, wait, short_wait, {
+            return driver,  {
                 "Application Type": "Easy Apply",
                 "Application Label": aria_label.strip(),
                 "Application Link": driver.current_url
             }
 
         # Default fallback
-        return driver, wait, short_wait, {
+        return driver,  {
             "Application Type": "Unknown",
             "Application Label": aria_label.strip(),
             "Application Link": driver.current_url
@@ -150,7 +150,7 @@ def extract_application_info(driver, wait, short_wait, log_base="logs/login_page
 
     except Exception as e:
         log_message(f"⚠️ Failed to extract application info: {e}", log_base, echo)
-        return driver, wait, short_wait, {
+        return driver,  {
             "Application Type": "Not Found",
             "Application Label": None,
             "Application Link": None
@@ -197,7 +197,7 @@ def extract_people_and_recruiters(driver, wait, short_wait, log_base="logs/login
     except Exception as e:
         log_message(f"⚠️ Failed to parse people/recruiters: {e}", log_base, echo)
 
-    return driver, wait, short_wait, recruiters
+    return driver,  recruiters
 
 
 # ------------------------------{Extract Preferences & Skills from Modal}------------------------------
@@ -252,11 +252,11 @@ def scrape_job_data(driver, wait, short_wait, job_id, applied_status, log_base="
     if st.session_state.applying_jobs:
 
         job_data = {'Job ID': job_id, 'Applied': applied_status}
-        driver, short_wait, job_data['Job Title'] = safe_get_text(driver, short_wait, By.CSS_SELECTOR, 'h1', log_base, echo)
-        driver, short_wait, job_data['Company Name'] = extract_company_name(driver, short_wait, log_base, echo)
-        driver, short_wait, job_data['Location'] = safe_get_text(driver, short_wait, By.XPATH, '//span[contains(@class, "tvm__text--low-emphasis") and contains(text(), ",")]', log_base, echo)
-        driver, short_wait, job_data['Date Posted'] = safe_get_text(driver, short_wait, By.XPATH, '//span[contains(@class, "tvm__text--positive")]//span', log_base, echo)
-        driver, short_wait, job_data['Applicants'] = safe_get_text(driver, short_wait, By.XPATH, '//span[contains(text(), "applicant")]', log_base, echo)
+        driver, job_data['Job Title'] = safe_get_text(driver, short_wait, By.CSS_SELECTOR, 'h1', log_base, echo)
+        driver, job_data['Company Name'] = extract_company_name(driver, short_wait, log_base, echo)
+        driver, job_data['Location'] = safe_get_text(driver, short_wait, By.XPATH, '//span[contains(@class, "tvm__text--low-emphasis") and contains(text(), ",")]', log_base, echo)
+        driver, job_data['Date Posted'] = safe_get_text(driver, short_wait, By.XPATH, '//span[contains(@class, "tvm__text--positive")]//span', log_base, echo)
+        driver, job_data['Applicants'] = safe_get_text(driver, short_wait, By.XPATH, '//span[contains(text(), "applicant")]', log_base, echo)
 
         driver, salary, workplace_type, job_type, skills = parse_job_preferences_and_skills(driver, short_wait, log_base, echo)
         job_data['Salary'] = salary
@@ -264,14 +264,14 @@ def scrape_job_data(driver, wait, short_wait, job_id, applied_status, log_base="
         job_data['Job Type'] = job_type
         job_data['Skills'] = skills
 
-        driver, short_wait, job_data['Job Description'] = safe_get_text(driver, short_wait, By.ID, 'job-details', log_base, echo)
-        driver, wait, short_wait, job_data['Recruiters'] = extract_people_and_recruiters(driver, wait, short_wait, log_base, echo)
-        driver, wait, short_wait, job_data['About Company'] = extract_about_company(driver, wait, short_wait, log_base, echo)
+        driver, job_data['Job Description'] = safe_get_text(driver, short_wait, By.ID, 'job-details', log_base, echo)
+        driver, job_data['Recruiters'] = extract_people_and_recruiters(driver, wait, short_wait, log_base, echo)
+        driver, job_data['About Company'] = extract_about_company(driver, wait, short_wait, log_base, echo)
 
-        driver, wait, short_wait, application_info = extract_application_info(driver, wait, short_wait, log_base, echo)
+        driver, application_info = extract_application_info(driver, wait, short_wait, log_base, echo)
         job_data.update(application_info)
 
-        return driver, wait, short_wait, job_data
+        return driver, job_data
     
     else:
         # ------{If applying_jobs flag is off, exit cleanly}------

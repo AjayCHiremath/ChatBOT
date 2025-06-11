@@ -80,7 +80,7 @@ def scrape_all_jobs(driver, wait, short_wait, log_base="logs/login_page_logs/", 
                         continue
                     time.sleep(1)
 
-                    driver, wait, short_wait, job_data = scrape_job_data(driver, wait, short_wait, job_id, applied_status)
+                    driver, job_data = scrape_job_data(driver, wait, short_wait, job_id, applied_status)
 
                     # If data is valid
                     if (job_data.get("Job Title") and job_data.get("Company Name") and 

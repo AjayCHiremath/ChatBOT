@@ -13,6 +13,38 @@ def is_loggedIn(driver):
     return "linkedin.com/feed" in driver.current_url
 
 
+# ------{Save cookies for future use}------
+def save_cookies(driver, cookies_file, log_base, echo):
+    try:
+        os.makedirs(os.path.dirname(cookies_file), exist_ok=True)
+        with open(cookies_file, 'wb') as f:
+            pickle.dump(driver.get_cookies(), f)
+        log_message(message="💾 Cookies saved for future sessions.", log_file=log_base, echo=echo)
+    except Exception as e:
+        log_message(message=f"⚠️ Failed to save cookies: {e}", log_file=log_base, echo=echo)
+
+
+# ------{Wait for 2FA and login verification}------
+def wait_for_2fa_and_save(driver, cookies_file, log_base, echo, max_wait=120):
+    start_time = time.time()
+    while True:
+        # ------{Abort login if user stops the process}------
+        exit_if_stopped(context="LOGIN PAGE", driver=driver, log_file=log_base, echo=echo)
+
+        # ------{Check if login was successful}------
+        if is_loggedIn(driver):
+            log_message(message="✅ 2FA completed. Logged in.", log_file=log_base, echo=echo)
+            # ------{Save cookies for future use}------
+            save_cookies(driver, cookies_file, log_base, echo)
+            break
+
+        # ------{Timeout after waiting too long for 2FA}------
+        if time.time() - start_time > max_wait:
+            raise TimeoutError("⏳ 2FA timeout: Login not completed.")
+
+        time.sleep(2)
+
+
 # ------{Login to LinkedIn using cookies or manual login}------
 def login_to_linkedin(driver, log_base="logs/login_page_logs/", echo=True):
     # ------{Proceed only if job application mode is active}------
@@ -58,35 +90,7 @@ def login_to_linkedin(driver, log_base="logs/login_page_logs/", echo=True):
             log_message(message="🔐 Login submitted. Waiting for 2FA...", log_file=log_base, echo=echo)
 
             # ------{Wait for 2FA and login verification}------
-            max_wait = 120
-            start_time = time.time()
-
-            while True:
-                # ------{Abort login if user stops the process}------
-                exit_if_stopped(context="LOGIN PAGE", driver=driver, log_file=log_base, echo=echo)
-
-                # ------{Check if login was successful}------
-                if is_loggedIn(driver):
-                    log_message(message="✅ 2FA completed. Logged in.", log_file=log_base, echo=echo)
-
-                    # ------{Save cookies for future use}------
-                    try:
-                        os.makedirs(os.path.dirname(cookies_file), exist_ok=True)
-                        with open(cookies_file, 'wb') as f:
-                            pickle.dump(driver.get_cookies(), f)
-
-                        log_message(message="💾 Cookies saved for future sessions.", log_file=log_base, echo=echo)
-
-                    except Exception as e:
-                        log_message(message=f"⚠️ Failed to save cookies: {e}", log_file=log_base, echo=echo)
-
-                    break
-
-                # ------{Timeout after waiting too long for 2FA}------
-                if time.time() - start_time > max_wait:
-                    raise TimeoutError("⏳ 2FA timeout: Login not completed.")
-
-                time.sleep(2)
+            wait_for_2fa_and_save(driver, cookies_file, log_base, echo)
 
         # ------{Handle login failure due to exception}------
         except Exception as e:
