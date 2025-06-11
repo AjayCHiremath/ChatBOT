@@ -1,0 +1,59 @@
+/* Transparent Header */
+.stApp > header {
+  background-color: transparent;
+}
+
+/* Main App Background with Gradient Animation */
+.stApp {
+  background: linear-gradient(270deg, #3a5683, #0E1117, #3a5683);
+  background-size: 600% 600%;
+  animation: main_gradient 20s ease infinite;
+  color: #FAFAFA;
+}
+
+/* Animate Main Background Gradient */
+@keyframes main_gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Sidebar with Creative Gradient and Subtle Animation */
+div[data-testid="stSidebarContent"] {
+  background: linear-gradient(
+    270deg,
+    rgba(58, 86, 131, 0.85),
+    rgba(38, 39, 48, 0.85),
+    rgba(58, 86, 131, 0.85)
+  );
+  background-size: 400% 400%;
+  animation: sidebar_gradient 15s ease infinite;
+  color: #FAFAFA;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  padding: 10px;
+}
+
+@keyframes sidebar_gradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Remove spacing from vertical blocks and containers */
+div[data-testid="stVerticalBlock"],
+div[data-testid="stElementContainer"],
+div[data-testid="stVerticalBlockBorderWrapper"],
+section.main,
+.block-container,
+.stHorizontalBlock,
+.stColumn {
+    margin-top: 0px !important;
+    padding-top: 0px !important;
+}
+
+/* Ensure Text Contrast */
+h1, h2, h3, h4, h5, h6,
+p, span, div, li, a {
+  color: #FAFAFA;
+}
