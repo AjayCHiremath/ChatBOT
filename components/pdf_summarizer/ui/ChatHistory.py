@@ -21,7 +21,7 @@ def display_chat_history(entry):
         if think:
             if enhanced_question:
                 create_expander(
-                    label="Enchanced questions:",
+                    label="Enhanced questions:",
                     generated_text=enhanced_question,
                     expanded=False
                 )
