@@ -5,20 +5,20 @@ from streamlit_lottie import st_lottie
 from streamlit_option_menu import option_menu
 from streamlit_cookies_manager import EncryptedCookieManager
 
+from utils.login_page.streamlit_login_auth_ui.login_utils import verify_email
 from utils.login_page.streamlit_login_auth_ui.login_utils import (check_usr_pass, load_lottieurl, check_valid_name, 
                                                             check_valid_email, check_unique_email, check_unique_usr, 
                                                             register_new_usr, check_email_exists, generate_random_passwd, 
                                                             send_passwd_in_email, change_passwd, check_current_passwd)
-from utils.login_page.streamlit_login_auth_ui.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
+from utils.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
+from utils.global_variables import OBJECT_KEYS_AUTHETICATION
 
 #--------{Builds the UI for the Login/ Sign Up page.}-------
 class __login__:
-    
-    def __init__(self, auth_token: str, company_name: str, width, height, logout_button_name: str = 'Logout', hide_menu_bool: bool = False, hide_footer_bool: bool = False, lottie_url: str = "https://assets8.lottiefiles.com/packages/lf20_ktwnwv5m.json" ):
-        self.auth_token = auth_token
+    def __init__(self, company_name: str, logout_button_name: str = 'Logout', 
+                 hide_menu_bool: bool = False, hide_footer_bool: bool = False, 
+                 lottie_url: str = "https://lottie.host/d4bdd3d4-c7a7-433b-beb4-780d2c34f831/y9JJMAmfcM.json" ):
         self.company_name = company_name
-        self.width = width
-        self.height = height
         self.logout_button_name = logout_button_name
         self.hide_menu_bool = hide_menu_bool
         self.hide_footer_bool = hide_footer_bool
@@ -31,23 +31,6 @@ class __login__:
         if not self.cookies.ready():
             st.stop()   
 
-
-    #--------{Checks if the auth file (where the user info is stored) already exists.}-------
-    def check_auth_json_file_exists(self, auth_filename: str) -> bool:
-        file_names = []
-        for path in os.listdir('./'):
-            if os.path.isfile(os.path.join('./', path)):
-                file_names.append(path)
-
-        present_files = []
-        for file_name in file_names:
-            if auth_filename in file_name:
-                present_files.append(file_name)
-                    
-            present_files = sorted(present_files)
-            if len(present_files) > 0:
-                return True
-        return False
 
     def get_username(self):
         if st.session_state['LOGOUT_BUTTON_HIT'] == False:
@@ -96,7 +79,7 @@ class __login__:
     #--------{Renders the lottie animation.}-------
     def animation(self) -> None:
         lottie_json = load_lottieurl(self.lottie_url)
-        st_lottie(lottie_json, width = self.width, height = self.height)
+        if lottie_json: st_lottie(lottie_json, quality='high')
 
 
     #--------{Creates the sign-up widget and stores the user info in a secure way in the _secret_auth_.json file.}-------
@@ -119,7 +102,6 @@ class __login__:
 
             if sign_up_submit_button:
                 if valid_name_check == False:
-                    print(read_auth_file_from_s3(bucket_name='userdatabase-generative-application-chatbot', object_key='_secret_auth_.json'))
                     st.error("Please enter a valid name!")
 
                 elif valid_email_check == False:
@@ -138,8 +120,8 @@ class __login__:
                     if valid_email_check == True:
                         if unique_email_check == True:
                             if unique_username_check == True:
-                                register_new_usr(name_sign_up, email_sign_up, username_sign_up, password_sign_up)
-                                st.success("Registration Successful!")
+                                register_new_usr(self.company_name, name_sign_up, email_sign_up, username_sign_up, password_sign_up)
+                                st.success("Registration Successful! Please check your mailbox to confirm signup.")
 
 
     #--------{Creates the forgot password widget and after user authentication (email), triggers an email to the user containing a random password.}-------
@@ -157,7 +139,7 @@ class __login__:
 
                 if email_exists_check == True:
                     random_password = generate_random_passwd()
-                    send_passwd_in_email(self.auth_token, username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
+                    send_passwd_in_email(username_forgot_passwd, email_forgot_passwd, self.company_name, random_password)
                     change_passwd(email_forgot_passwd, random_password)
                     st.success("Secure Password Sent Successfully!")
 
@@ -244,9 +226,28 @@ class __login__:
         if 'LOGOUT_BUTTON_HIT' not in st.session_state:
             st.session_state['LOGOUT_BUTTON_HIT'] = False
 
-        authorized_user_data = read_auth_file_from_s3()
+        parsed_url = st.query_params
+        if 'email_verification_checked' not in st.session_state:
+            st.session_state['email_verification_checked'] = False
 
-        write_auth_file_to_s3(authorized_user_data)
+        if not st.session_state['email_verification_checked']:
+            token = parsed_url.get("token")
+            if token and isinstance(token, str) and len(token.strip()) > 0:
+                if isinstance(token, list):
+                    token = token[0]
+                verified = verify_email(token)
+                if verified:
+                    st.toast("✅ Your email has been successfully verified! Please log in now.")
+
+        authorized_user_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
+                                                    object_key=OBJECT_KEYS_AUTHETICATION)
+        
+        if not authorized_user_data:
+            print("Auth file not found or empty. Creating new empty file on S3.")
+            authorized_user_data = []
+            write_auth_file_to_s3(authorized_user_data=authorized_user_data, 
+                                bucket_name=os.getenv("MY_S3_BUCKET"), 
+                                object_key=OBJECT_KEYS_AUTHETICATION)
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 

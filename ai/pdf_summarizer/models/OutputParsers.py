@@ -1,4 +1,5 @@
 from langchain_core.output_parsers import StrOutputParser
 
-def get_output_parser():
+# ---{ Helper function to get output parser }---
+def get_str_output_parser():
     return StrOutputParser()

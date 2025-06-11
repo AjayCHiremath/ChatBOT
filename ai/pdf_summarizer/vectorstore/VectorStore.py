@@ -5,8 +5,9 @@ import os
 from langchain_pinecone.vectorstores import PineconeVectorStore
 
 from utils.logger.EventLogger import log_message
-from utils.logger.SessionId import get_session_id, get_email_id
-from utils.GLOBALVARIABLES import METADATA
+from utils.logger.SessionId import get_session_id
+from utils.global_variables import METADATA
+
 
 # ---{ Helper function to Create or Get Vector Database (Pinecone) }---
 def create_vectorstore(embeddings, documents=None, log_base="logs/chatbot/", echo=False):
@@ -54,11 +55,9 @@ def create_vectorstore(embeddings, documents=None, log_base="logs/chatbot/", ech
 
         # ---{Create Pinecone VectorStore}---
         try:
-            session_id = get_session_id()
-            gmail_username = get_email_id()
             vectorstore = PineconeVectorStore(index=index, 
                                               embedding=embeddings,
-                                              namespace=f"{gmail_username}_{session_id}",
+                                              namespace=f"{get_session_id()}",
                                               distance_strategy="cosine")
             log_message("[Success] Pinecone VectorStore created successfully.", log_file=log_base, echo=echo)
 

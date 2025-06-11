@@ -1,39 +1,35 @@
-from streamlit_chat import message as chat_message
-import random
+import streamlit as st
 
 from components.pdf_summarizer.ui.Expander import create_expander
 
-from utils.GLOBALVARIABLES import HUMAN_ICONS, AI_ICONS
+from utils.global_variables import HUMAN_ICON, AI_ICON
 
-def display_chat_history(entry, idx):
-
+def display_chat_history(entry):
+    
     role = entry.get("role")
+    enchanced_question = entry.get("enhanced_question")
     think = entry.get("think")
     message_content = entry.get("message")
-    
-    # Add unique keys using idx or hash
-    message_key = f"chat_message_{idx}_{hash(message_content)}"
 
     # Display the main message with unique key
-    if role == "user":
-        chat_message(
-            message_content,
-            is_user=True,
-            logo=random.shuffle(HUMAN_ICONS),
-            key=message_key
-        )
-        
+    if role == "user":        
+        with st.chat_message(role, avatar=HUMAN_ICON):
+            st.markdown(message_content)
+
     else:
         # Show chain-of-thought if available
         if think:
+            if enchanced_question:
+                create_expander(
+                    label="Enchanced questions:",
+                    generated_text=enchanced_question,
+                    expanded=False
+                )
             create_expander(
                 label="Instructions:",
                 generated_text=think,
                 expanded=False
             )
-        chat_message(
-            message_content,
-            is_user=False,
-            logo=random.shuffle(AI_ICONS),
-            key=message_key
-        )
+
+        with st.chat_message(role, avatar=AI_ICON):
+            st.markdown(message_content)

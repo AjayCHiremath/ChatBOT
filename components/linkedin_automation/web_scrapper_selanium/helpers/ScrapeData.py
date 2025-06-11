@@ -1,8 +1,6 @@
 import time
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import NoSuchElementException
-from selenium.webdriver.support.ui import WebDriverWait
 
 from utils.logger.EventLogger import log_message
 from components.linkedin_automation.web_scrapper_selanium.helpers.ScrapeHelpers import scrape_job_data

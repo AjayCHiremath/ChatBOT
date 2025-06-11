@@ -1,5 +1,6 @@
 from langchain_core.vectorstores import VectorStoreRetriever
-from utils.GLOBALVARIABLES import SEARCH_KWARGS, SEARCH_TYPE, METADATA
+
+from utils.global_variables import SEARCH_KWARGS, SEARCH_TYPE, METADATA
 from utils.logger.EventLogger import log_message  
 
 #---{Get RAG retriever from vectorstore}---

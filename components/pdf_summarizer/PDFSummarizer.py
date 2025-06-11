@@ -6,18 +6,26 @@ from components.pdf_summarizer.ui.ChatHistory import display_chat_history
 from ai.pdf_summarizer.tools.ModelConnections import connect_chains
 from components.pdf_summarizer.ui.StatusBar import get_status_data_ingestion, get_status_embed_store
 from utils.logger.EventLogger import log_message
-import utils.GLOBALVARIABLES as global_variables
-from utils.EnvReloader import reload_environment
 
+import utils.global_variables as global_variables
+from utils.env_reloaders import reload_environment
 
-# ---{ PDF Summarizer application logic }---
-def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
-# ---{ Reinitiate Global variables if not set }---
-    variables_to_check = [value for name, value in vars(global_variables).items()
-                          if name.isupper() and isinstance(value, (str, type(None)))]
-    
+# ---{ Helper: Reinitialize Global Variables }---
+@st.cache_data(show_spinner=False)
+def reinit_global_variables(log_base, echo):
+    variables_to_check = [
+        value for name, value in vars(global_variables).items()
+        if name.isupper() and isinstance(value, (str, type(None)))
+    ]
     if any(var is None for var in variables_to_check):
-        reload_environment(log_base="logs/chatbot/", echo=False)
+        reload_environment(log_base=log_base, echo=echo)
+
+
+# ---{ PDF Summarizer Application Logic }---
+def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
+    # ---{ Reinitiate Global variables if not set }---
+    reinit_global_variables(log_base, echo)
+
     try:
         if 'generating_response' not in st.session_state: st.session_state.generating_response = False
         # ---{ Build layout: response and input containers }---
@@ -31,7 +39,8 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
         with response_container:
             try:
                 for idx, entry in enumerate(st.session_state.chat_history):
-                    display_chat_history(entry=entry, idx=idx)
+
+                    display_chat_history(entry=entry)
             except Exception as e:
                 log_message(f"[Error] Displaying chat history: {e}", log_file=log_base, echo=echo)
 
@@ -55,23 +64,20 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
                 st.session_state.previous_file_len = len(files)  # Update the stored length
 
             if st.session_state.embed_docs:
+
                 # ---{ Data Ingestion }---
                 try:
                     if len(files) > 0:
-                        st.session_state.generating_response = True
                         # ---{ Preprocess the uploaded files }---
                         st.session_state.documents = get_status_data_ingestion(files=files, log_base=log_base, echo=echo)
                     else:
                         st.toast("⚠️ Please Upload research documents")
                 except Exception as e:
                     log_message(f"[Error] Handling Document Ingestion: {e}", log_file=log_base, echo=echo)
-                finally:
-                    st.session_state.generating_response = False
 
                 # ---{ Document Embedding and Vector Store }---
                 try:
                     if st.session_state.documents:
-                        st.session_state.generating_response = True
 
                         # ---{ Preprocess stage 2 }---
                         st.session_state.embedded_and_vectorstore = get_status_embed_store(documents=st.session_state.documents, log_base=log_base, echo=echo)
@@ -83,6 +89,7 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
                     log_message(f"[Error] Handling Embeddings: {e}", log_file=log_base, echo=echo)
                 finally:
                     st.session_state.generating_response = False
+                    st.session_state.embed_docs = False
 
         # ---{ Handle user message submission }---
         try:
@@ -108,7 +115,7 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
                         "enhanced_question": None
                     }
                     st.session_state.chat_history.append(message)
-                    display_chat_history(entry=message, idx=len(st.session_state.get("chat_history", 1)) - 1)
+                    display_chat_history(entry=message)
                     (reframed_question_response, chain_of_thought, 
                         summary_response) = connect_chains(vectorstore=st.session_state.embedded_and_vectorstore, log_base=log_base, echo=echo)
                     log_message("[Success] Chat chain executed successfully.", log_file=log_base, echo=echo)
@@ -119,7 +126,7 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
                         "enhanced_question": reframed_question_response
                     }
                     st.session_state.chat_history.append(message)
-                    display_chat_history(entry=message, idx=len(st.session_state.get("chat_history", 1)) - 1)
+                    display_chat_history(entry=message)
 
                 except Exception as e:
                     log_message(f"[Error] Running the chat chain: {e}", log_file=log_base, echo=echo)

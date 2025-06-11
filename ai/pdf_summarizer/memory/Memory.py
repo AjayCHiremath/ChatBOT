@@ -1,25 +1,36 @@
 import re
-import json
 import os
 import streamlit as st
 
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 
-from utils.GLOBALVARIABLES import PERSIST_DIRECTORY
 from utils.logger.EventLogger import log_message
+from utils.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
+from utils.global_variables import PERSIST_DIRECTORY, OBJECT_KEYS_CHAT_HISTORY
 
 # ---{ Helper function to save chat history locally }---
-def save_chat_history_locally(session_id: str, history, log_base="logs/chatbot/", echo=False) -> BaseChatMessageHistory:
-    os.makedirs(PERSIST_DIRECTORY, exist_ok=True)
-    # ---{ Save to local file in JSON format }---
-    file_path = os.path.join(PERSIST_DIRECTORY, f"{session_id}.json")
-    with open(file_path, "w", encoding="utf-8") as f:
-        # ---{ Convert all messages to dict format using .dict() }---
-        messages_dict = [msg.dict() for msg in history.messages]
-        json.dump(messages_dict, f, ensure_ascii=False, indent=2)
-    log_message("[Success] Saved Chat History locally.", log_file=log_base, echo=echo)
+def save_chat_history_locally(history, log_base="logs/chatbot/", echo=False) -> BaseChatMessageHistory:
+    try:
+        #----{ Read auth file from S3 }------
+        authorized_user_data = read_auth_file_from_s3(
+            bucket_name=os.getenv("MY_S3_BUCKET"),
+            object_key=(PERSIST_DIRECTORY+OBJECT_KEYS_CHAT_HISTORY)
+        )
 
+        #----{ Convert all messages to dict format using .dict() }------
+        messages_dict = [msg.dict() for msg in history.messages]
+        authorized_user_data.append(messages_dict)
+
+        #----{ Write updated auth file to S3 }------
+        write_auth_file_to_s3(
+            authorized_user_data=authorized_user_data,
+            bucket_name=os.getenv("MY_S3_BUCKET"),
+            object_key=(PERSIST_DIRECTORY+OBJECT_KEYS_CHAT_HISTORY)
+        )
+        log_message("[Success] Saved Chat History to S3.", log_file=log_base, echo=echo)
+    except Exception as e:
+        log_message(f"[Error] Saving Chat History to S3 failed: {e}", log_file=log_base, echo=echo)
 
 # ---{ Retrieve or initialize in-memory chat history for a given session ID }---
 def get_session_history(session_id: str, log_base="logs/chatbot/", echo=False) -> BaseChatMessageHistory:
@@ -46,7 +57,7 @@ def add_message_to_history(session_id: str, message: str, is_user=True, log_base
     log_message("[Success] Created chat histroy sucessfully.", log_file=log_base, echo=echo)
 
     # ---{ Save history locally }---    
-    save_chat_history_locally(session_id=session_id, history=history, log_base=log_base, echo=echo)
+    save_chat_history_locally(history=history, log_base=log_base, echo=echo)
 
 
 # ---{ Directly return the chat history memory for the given session ID }---

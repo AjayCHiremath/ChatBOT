@@ -2,7 +2,8 @@ from langchain_together import TogetherEmbeddings
 import json
 import os
 
-from utils.GLOBALVARIABLES import FILE_PATH_MODEL_NAME, CHUNK_SIZE_EMBEDDINGS
+from utils.global_variables import FILE_PATH_MODEL_NAME, CHUNK_SIZE_EMBEDDINGS
+
 from utils.logger.EventLogger import log_message
 
 # ---{ Helper function to embed documents }---
