@@ -118,7 +118,7 @@ if __name__ == "__main__":
 
         if st.session_state.applying_jobs_ext:
             start_external_apply(
-                import_path="D:/Course/ChatBOT/logs/jobs_applied/linkedin_jobs.xlsx",
+                import_path="logs/jobs_applied/linkedin_jobs.xlsx",
                 log_base="logs/job_application_logs/logs_text/",
                 echo=False)
     else:

@@ -3,17 +3,15 @@ import streamlit as st
 
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from utils.logger.EventLogger import log_message
 
 # ---------------------{ Function: Apply LinkedIn Job Filters }---------------------
-def apply_filters(driver, log_base="logs/login_page_logs/", echo=False):
+def apply_filters(driver, wait, log_base="logs/login_page_logs/", echo=False):
     
     # ---------------------{ Proceed only if job application is active }---------------------
     if st.session_state.applying_jobs:
-        wait = WebDriverWait(driver, 2)
         try:
             # ---------------------{ Click the "Show results" button after setting filters }---------------------
             show_results_btn: WebElement = wait.until(

@@ -4,14 +4,14 @@ from utils.logger.SessionId import get_session_id
 APP_LINK="https://chatbot-and-linkedin-jobs-apply.up.railway.app/"
 
 # Document chunking
-DOCUMENTS_CHUNK_SIZE = 1200
-DOCUMENTS_CHUNK_OVERLAP = 200
+DOCUMENTS_CHUNK_SIZE = 1500
+DOCUMENTS_CHUNK_OVERLAP = 250
 
 # Embedding chunk size
 CHUNK_SIZE_EMBEDDINGS = 100
 
 # CHAT HISTORY STORAGE
-MAX_TOKENS_CHAT_HISTORY = 1000
+MAX_TOKENS_CHAT_HISTORY = 1500
 
 # Logging and storage
 LOG_BASE = "logs/chatbot"
