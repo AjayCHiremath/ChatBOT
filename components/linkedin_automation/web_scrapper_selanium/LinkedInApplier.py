@@ -19,7 +19,7 @@ import random
 
 #-----------------------{ Apply filter }--------------------------
 def applied_filters(driver, wait, short_wait, export_path, log_base="logs/login_page_logs/", echo=False):
-    driver = apply_filters(driver, log_base, echo)
+    driver = apply_filters(driver, wait, log_base, echo)
     driver, df = scrape_all_jobs(driver, wait, short_wait, log_base, echo)
 
     update_or_append_excel(df, export_path, log_base, echo)
@@ -28,7 +28,6 @@ def applied_filters(driver, wait, short_wait, export_path, log_base="logs/login_
 
 #-----------------------{ Add Scrapped jobs in excel }--------------------------
 def update_or_append_excel(df_new, export_path, log_base="logs/login_page_logs/", echo=False):
-    os.makedirs(os.path.dirname(export_path), exist_ok=True)
     df_new = pd.DataFrame(df_new)
     # Ensure "Job ID" exists
     if "Job ID" not in df_new.columns:
@@ -45,20 +44,18 @@ def update_or_append_excel(df_new, export_path, log_base="logs/login_page_logs/"
     if read_file:
         df_existing = pd.read_excel(read_file)
         df_existing.set_index("Job ID", inplace=True)
-
         # Update or append
         df_updated = df_existing.combine_first(df_new)
         df_updated.update(df_new)
     else:
         df_updated = df_new
-        write_auth_file_to_s3(
-            authorized_user_data=df_updated,
-            bucket_name=os.getenv("MY_S3_BUCKET"),
-            object_key=export_path
-        )
 
-    # Save back to file
-    df_updated.reset_index().to_excel(export_path, index=False)
+    # Save back to S3 only, no local file/dir
+    write_auth_file_to_s3(
+        authorized_user_data=df_updated,
+        bucket_name=os.getenv("MY_S3_BUCKET"),
+        object_key=export_path
+    )
 
 
 #-----------------------{ Job Application Logic }--------------------------

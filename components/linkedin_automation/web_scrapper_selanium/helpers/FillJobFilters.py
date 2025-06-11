@@ -59,7 +59,7 @@ def switch_based_filter(driver, wait, filter_group, log_base="logs/login_page_lo
         log_message(message="🛑 Terminating Browser: ALL FILTERS BTN CLICK", log_file=log_base, echo=echo)
         driver.quit()
         exit()
-    return driver, wait 
+    return driver
 
 #-----------------------{ Select radio-based filter options }--------------------------
 def radio_based_filter(driver, wait, val, filter_label, log_base="logs/login_page_logs/", echo=False):
@@ -88,7 +88,7 @@ def radio_based_filter(driver, wait, val, filter_label, log_base="logs/login_pag
         log_message(message="🛑 Terminating Browser: ALL FILTERS BTN CLICK", log_file=log_base, echo=echo)
         driver.quit()
         exit()
-    return driver, wait 
+    return driver
 
 #-----------------------{ Addable Input Filter Function }--------------------------
 def handle_addable_input_filter(driver, short_wait, label, value, log_base="logs/login_page_logs/", echo=False):
@@ -217,7 +217,7 @@ def multiselect_based_filter(driver, wait, short_wait, values, filter_group, log
         driver.quit()
         exit()
 
-    return driver, wait 
+    return driver 
 
 
 # ---{ Formatting Salary value }---
@@ -310,11 +310,11 @@ def apply_all_filters(driver, wait, short_wait, session_data, log_base="logs/log
             
             filter_group = filter_mapping[key]
             if key in multiselect_filters:
-                driver, wait = multiselect_based_filter(driver, wait, short_wait, values, filter_group, log_base, echo)
+                driver = multiselect_based_filter(driver, wait, short_wait, values, filter_group, log_base, echo)
             elif key in radio_filters:
-                driver, wait = radio_based_filter(driver, wait, values, filter_group, log_base, echo)
+                driver = radio_based_filter(driver, wait, values, filter_group, log_base, echo)
             elif key in switch_based_filters:
-                driver, wait = switch_based_filter(driver, wait, filter_group, log_base, echo)
+                driver = switch_based_filter(driver, wait, filter_group, log_base, echo)
     else:
         # ------{If applying_jobs flag is off, exit cleanly}------
         log_message(message="🛑 Terminating Browser: MAIN JOB SEARCH TERMINATED", log_file=log_base, echo=echo)
