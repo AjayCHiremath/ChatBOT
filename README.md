@@ -1,5 +1,5 @@
 
-# 📚✨ ChatBOT Project – Documentation ✨📚
+# 📚✨ ChatBOT Project ✨📚
 
 Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built with 💡 **LangChain**, 🚀 **Streamlit**, and 🤖 **Together.ai**! This system features token-level streaming, plug-and-play models/chains, and is accessible via a live demo.
 
@@ -7,7 +7,7 @@ Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built w
 
 ---
 
-## 🧱 Project Structure (Detailed)
+## 🧱 Project Structure
 
 ```markdown
 📂 CHATBOT/
