@@ -7,7 +7,7 @@ from utils.global_variables import HUMAN_ICON, AI_ICON
 def display_chat_history(entry):
     
     role = entry.get("role")
-    enchanced_question = entry.get("enhanced_question")
+    enhanced_question = entry.get("enhanced_question")
     think = entry.get("think")
     message_content = entry.get("message")
 
@@ -19,10 +19,10 @@ def display_chat_history(entry):
     else:
         # Show chain-of-thought if available
         if think:
-            if enchanced_question:
+            if enhanced_question:
                 create_expander(
                     label="Enchanced questions:",
-                    generated_text=enchanced_question,
+                    generated_text=enhanced_question,
                     expanded=False
                 )
             create_expander(
