@@ -1,6 +1,7 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 from utils.global_variables import DOCUMENTS_CHUNK_OVERLAP, DOCUMENTS_CHUNK_SIZE
+
 from utils.logger.EventLogger import log_message
 
 # ---{ Helper function to split documents into chunks }---

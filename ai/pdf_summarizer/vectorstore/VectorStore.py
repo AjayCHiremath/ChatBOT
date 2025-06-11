@@ -8,6 +8,7 @@ from utils.logger.EventLogger import log_message
 from utils.logger.SessionId import get_session_id
 from utils.global_variables import METADATA
 
+
 # ---{ Helper function to Create or Get Vector Database (Pinecone) }---
 def create_vectorstore(embeddings, documents=None, log_base="logs/chatbot/", echo=False):
     try:
