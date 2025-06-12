@@ -21,7 +21,7 @@ pandas==2.2.3
 pinecone==7.0.2
 pinecone-plugin-assistant==1.6.1
 pinecone-plugin-interface==0.0.7
-PyAutoGUI==0.9.54
+# PyAutoGUI==0.9.54
 pydantic==2.11.4
 pydantic-settings==2.9.1
 pydantic_core==2.33.2
