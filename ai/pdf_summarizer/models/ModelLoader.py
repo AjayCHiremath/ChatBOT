@@ -1,6 +1,7 @@
 from langchain_together import ChatTogether
 import json
 import os
+import streamlit as st
 
 from utils.logger.EventLogger import log_message
 from utils.global_variables import FILE_PATH_MODEL_NAME, MODEL_MAX_TOKENS
@@ -28,7 +29,7 @@ def get_model(model_work="question_reframer", log_base="logs/chatbot/", echo=Fal
         # ---{ Inference Model }---
         model = ChatTogether(
             model=model_name,
-            api_key=os.getenv("TOGETHER_API_KEY"),
+            api_key=os.getenv("TOGETHER_API_KEY") if "user_api_key" not in st.session_state else st.session_state.user_api_key,
             max_tokens=MODEL_MAX_TOKENS,
             temperature=0.7,
             streaming=False,

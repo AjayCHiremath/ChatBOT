@@ -1,6 +1,7 @@
 from langchain_together import TogetherEmbeddings
 import json
 import os
+import streamlit as st
 
 from utils.global_variables import FILE_PATH_MODEL_NAME, CHUNK_SIZE_EMBEDDINGS
 
@@ -28,7 +29,7 @@ def get_embeddings(model_work="embeddings", log_base="logs/chatbot/", echo=False
     # ---{ Create Embeddings model using TogetherEmbeddings }---
     try:
         embedding_model = TogetherEmbeddings(
-            api_key=os.getenv("TOGETHER_API_KEY"),
+            api_key=os.getenv("TOGETHER_API_KEY") if "user_api_key" not in st.session_state else st.session_state.user_api_key,
             base_url=os.getenv("TOGETHER_BASE_URL"),
             model=model_name,
             chunk_size=CHUNK_SIZE_EMBEDDINGS,
