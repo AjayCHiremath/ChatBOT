@@ -1,6 +1,7 @@
 import re
 import os
 import streamlit as st
+from datetime import datetime, timedelta
 
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
@@ -10,7 +11,7 @@ from utils.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
 from utils.global_variables import PERSIST_DIRECTORY, OBJECT_KEYS_CHAT_HISTORY
 
 # ---{ Helper function to save chat history locally }---
-def save_chat_history_locally(history, log_base="logs/chatbot/", echo=False) -> BaseChatMessageHistory:
+def save_chat_history(history, log_base="logs/chatbot/", echo=False) -> BaseChatMessageHistory:
     try:
         #----{ Read auth file from S3 }------
         authorized_user_data = read_auth_file_from_s3(
@@ -57,7 +58,12 @@ def add_message_to_history(session_id: str, message: str, is_user=True, log_base
     log_message("[Success] Created chat histroy sucessfully.", log_file=log_base, echo=echo)
 
     # ---{ Save history locally }---    
-    save_chat_history_locally(history=history, log_base=log_base, echo=echo)
+    if 'last_saved_time' not in st.session_state:
+        st.session_state.last_saved_time = datetime.now()
+
+    if datetime.now() - st.session_state.last_saved_time > timedelta(seconds=500):
+        save_chat_history(history, log_base=log_base, echo=echo)
+        st.session_state.last_saved_time = datetime.now()
 
 
 # ---{ Directly return the chat history memory for the given session ID }---

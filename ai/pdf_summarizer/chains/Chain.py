@@ -33,6 +33,10 @@ def build_chain(prompt, model, log_base="logs/chatbot/", echo=False):
         log_message(f"[Error] build_chain: {e}", log_file=log_base, echo=echo)
         raise
 
+# ---{ Helper function to clean metadata }---
+def clean_metadata(meta):
+    keys_to_keep = ["page", "total_pages", "source", "session_id"]
+    return {k: v for k, v in meta.items() if k in keys_to_keep}
 
 # ---{ Helper function to build Sequential Chat Chain }---
 def build_chat_chain(reframing_chain, summarization_chain, retriever, output_parser, log_base="logs/chatbot/", echo=False):
@@ -118,7 +122,10 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
             #---------{Concatenate all page contents from the documents.}---------
             #---------{Also forward 'reframed_question' and 'chat_history'.}---------
             RunnableLambda(lambda inputs: {
-                "context": "".join(doc.page_content for doc in (inputs["context_docs"] or [])),
+                "context": "".join(
+                    f"[Metadata: {', '.join(f'{k}={v}' for k, v in clean_metadata(doc.metadata).items())}]\n{doc.page_content}"
+                    for doc in (inputs["context_docs"] or [])
+                ),
                 "reframed_question": inputs["reframed_question"],
                 "chat_history": inputs["chat_history"]
             }) |
