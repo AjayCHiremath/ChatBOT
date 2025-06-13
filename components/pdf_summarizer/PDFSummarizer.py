@@ -3,8 +3,9 @@ import streamlit as st
 from components.pdf_summarizer.ui.ContainerLayout import build_layout
 from components.pdf_summarizer.ui.UserInput import get_user_input, get_file
 from components.pdf_summarizer.ui.ChatHistory import display_chat_history
-from ai.pdf_summarizer.tools.ModelConnections import connect_chains
 from components.pdf_summarizer.ui.StatusBar import get_status_data_ingestion, get_status_embed_store
+from ai.pdf_summarizer.tools.ModelConnections import connect_chains
+from ai.pdf_summarizer.security.api_key_generator import check_usage_history
 from utils.logger.EventLogger import log_message
 
 import utils.global_variables as global_variables
@@ -39,7 +40,6 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
         with response_container:
             try:
                 for idx, entry in enumerate(st.session_state.chat_history):
-
                     display_chat_history(entry=entry)
             except Exception as e:
                 log_message(f"[Error] Displaying chat history: {e}", log_file=log_base, echo=echo)
@@ -105,6 +105,9 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
 
         # ---{ Run the chat chain and stream the assistant response }---
         if st.session_state.run_chain:
+            #---{ Update usage history }---
+            st.session_state.response_count += 1
+            check_usage_history()
             # ---{ Main Process }---
             with response_container:
                 try:
@@ -117,7 +120,8 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
                     st.session_state.chat_history.append(message)
                     display_chat_history(entry=message)
                     (reframed_question_response, chain_of_thought, 
-                        summary_response) = connect_chains(vectorstore=st.session_state.embedded_and_vectorstore, log_base=log_base, echo=echo)
+                        summary_response) = connect_chains(vectorstore=st.session_state.embedded_and_vectorstore, 
+                                                           documents=st.session_state.documents, log_base=log_base, echo=echo)
                     log_message("[Success] Chat chain executed successfully.", log_file=log_base, echo=echo)
                     message = {
                         "role": "assistant",

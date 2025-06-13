@@ -29,7 +29,7 @@ def get_status_embed_store(documents, log_base="logs/chatbot/", echo=False):
                 #---{Create Pinecone VectorStore}---
                 vectorstore = create_vectorstore(embeddings=embeddings, documents=documents, log_base=log_base, echo=echo)
                 log_message("[Success] Vectorstore created successfully.", log_file=log_base, echo=echo)
-                st.write("✅ Data analysis completed!")
+                st.write("✔️ Data analysis completed!")
                 time.sleep(0.5)
                 st.empty()
                 return vectorstore

@@ -5,7 +5,6 @@ import streamlit as st
 #----{ Read auth file from S3 }------
 def read_auth_file_from_s3(bucket_name, object_key):
     try:
-        
         #----{ Connect to S3 client }------
         s3 = st.session_state.aws_env.client('s3')
 

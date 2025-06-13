@@ -11,7 +11,6 @@ def get_rag(vectorstore, log_base="logs/chatbot/", echo=False):
             vectorstore=vectorstore,
             search_type=SEARCH_TYPE,
             search_kwargs=SEARCH_KWARGS,
-            metadata=METADATA
         )
         log_message("[Success] RAG retriever created successfully.", log_file=log_base, echo=echo)
         return retriever
