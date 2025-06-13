@@ -121,7 +121,7 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
                     display_chat_history(entry=message)
                     (reframed_question_response, chain_of_thought, 
                         summary_response) = connect_chains(vectorstore=st.session_state.embedded_and_vectorstore, 
-                                                           documents=st.session_state.documents, log_base=log_base, echo=echo)
+                                                           log_base=log_base, echo=echo)
                     log_message("[Success] Chat chain executed successfully.", log_file=log_base, echo=echo)
                     message = {
                         "role": "assistant",

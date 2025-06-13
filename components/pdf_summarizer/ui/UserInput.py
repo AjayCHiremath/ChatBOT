@@ -23,11 +23,11 @@ def get_file():
         disabled=disabled,
         key=f"uploaded_pdfs_{st.session_state.file_upload_key}",
     )
-    
+
 # ---------------------{ Chat Input Form Builder }---------------------
 def create_input_form():
     # ---------------------{ User Message Input Form }---------------------
-    with st.form(key="user_input_form", clear_on_submit=False):
+    with st.form(key="user_input_form", clear_on_submit=True):
         cols = st.columns([7, 1, 1, 1])
 
         with cols[0]:

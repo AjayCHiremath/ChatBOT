@@ -8,12 +8,23 @@ from utils.aws_utils import read_auth_file_from_s3
 from utils.global_variables import OBJECT_KEYS_AUTHETICATION
 
 # -- Custom writer for updating user data back to S3 --
-def write_auth_file_to_s3(updated_data, bucket_name, object_key):
+def write_auth_file_to_s3(updated_data, bucket_name, object_key, use_locally=False):
     try:
         json_data = json.dumps(updated_data)
-        json_bytes = io.BytesIO(json_data.encode())
-        s3 = st.session_state.aws_env.client('s3')
-        s3.upload_fileobj(json_bytes, bucket_name, object_key)
+        
+        if not use_locally:
+            json_bytes = io.BytesIO(json_data.encode())
+            s3 = st.session_state.aws_env.client('s3')
+            s3.upload_fileobj(json_bytes, bucket_name, object_key)
+        else:
+            #----{ Ensure directory exists }------
+            local_dir = os.path.dirname(object_key)
+            if local_dir and not os.path.exists(local_dir):
+                os.makedirs(local_dir, exist_ok=True)
+
+            #----{ Write to local file }------
+            with open(object_key, 'w') as file:
+                file.write(json_data)
     except Exception as e:
         st.error(f"❌ Failed to update usage history: {e}")
 
@@ -25,7 +36,8 @@ def check_usage_history():
     #---{Read current auth data}---
     auth_data = read_auth_file_from_s3(
         bucket_name=os.getenv("MY_S3_BUCKET"),
-        object_key=OBJECT_KEYS_AUTHETICATION
+        object_key=OBJECT_KEYS_AUTHETICATION,
+        use_locally=False
     )
 
     #---{ Find user in auth data }---
@@ -46,4 +58,4 @@ def check_usage_history():
     st.session_state.usage_history = user['usage_history']
 
     #---{Save updated auth data back to S3}---
-    write_auth_file_to_s3(auth_data, bucket_name=os.getenv("MY_S3_BUCKET"), object_key=OBJECT_KEYS_AUTHETICATION)
+    write_auth_file_to_s3(auth_data, bucket_name=os.getenv("MY_S3_BUCKET"), object_key=OBJECT_KEYS_AUTHETICATION, use_locally=False)
