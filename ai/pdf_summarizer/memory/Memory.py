@@ -17,7 +17,7 @@ def save_chat_history(history, log_base="logs/chatbot/", echo=False) -> BaseChat
         authorized_user_data = read_auth_file_from_s3(
             bucket_name=os.getenv("MY_S3_BUCKET"),
             object_key=(PERSIST_DIRECTORY+OBJECT_KEYS_CHAT_HISTORY),
-            use_locally=True
+            use_locally=False
         )
 
         #----{ Convert all messages to dict format using .dict() }------
@@ -29,7 +29,7 @@ def save_chat_history(history, log_base="logs/chatbot/", echo=False) -> BaseChat
             authorized_user_data=authorized_user_data,
             bucket_name=os.getenv("MY_S3_BUCKET"),
             object_key=(PERSIST_DIRECTORY+OBJECT_KEYS_CHAT_HISTORY),
-            use_locally=True
+            use_locally=False
         )
         log_message("[Success] Saved Chat History to S3.", log_file=log_base, echo=echo)
     except Exception as e:
