@@ -14,16 +14,9 @@ def document_chunking(documents, log_base="logs/chatbot/", echo=False):
         )
         log_message("[Success] Text splitter initialized successfully.", log_file=log_base, echo=echo)
 
-        split_docs = []
-        # ---{Iterate through each document and split it}---
-        for doc in documents:
-            try:
-                splits = splitter.split_documents([doc])
-                split_docs.extend(splits)
-                log_message("[Success] Document split into chunks successfully.", log_file=log_base, echo=echo)
-            except Exception as e:
-                log_message(f"[Error] Splitting document: {e}", log_file=log_base, echo=echo)
-                raise
+        # ---{Split documents}---
+        split_docs = splitter.split_documents(documents)
+        log_message(f"[Success] {len(split_docs)} chunks created.", log_base, echo)
 
         # ---{Return all split documents}---
         return split_docs

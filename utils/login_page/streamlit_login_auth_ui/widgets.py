@@ -321,13 +321,15 @@ class __login__:
                     st.toast("✔️ Your email has been successfully verified! Please log in now.")
 
         authorized_user_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                                                    object_key=OBJECT_KEYS_AUTHETICATION)
+                                                    object_key=OBJECT_KEYS_AUTHETICATION,
+                                                    use_locally=False)
         
         if not authorized_user_data:
             authorized_user_data = []
             write_auth_file_to_s3(authorized_user_data=authorized_user_data, 
                                 bucket_name=os.getenv("MY_S3_BUCKET"), 
-                                object_key=OBJECT_KEYS_AUTHETICATION)
+                                object_key=OBJECT_KEYS_AUTHETICATION,
+                                use_locally=False)
 
         main_page_sidebar, selected_option = self.nav_sidebar()
 

@@ -13,11 +13,15 @@ from utils.global_variables import OBJECT_KEYS_AUTHETICATION, APP_LINK
 from utils.logger.EventLogger import log_message
 ph = PasswordHasher() 
 
+#-------{ Read S3 authentication file and store the data globally }--------
+authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
+                        object_key=OBJECT_KEYS_AUTHETICATION,
+                        use_locally=False)
+
 #-------{Authenticates the username and password.}--------
 def check_usr_pass(username: str, password: str) -> bool:
-    authorized_user_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), object_key=OBJECT_KEYS_AUTHETICATION)
 
-    for registered_user in authorized_user_data:
+    for registered_user in authorized_users_data:
         if registered_user['username'] == username or registered_user['email'] == username:
             try:
                 passwd_verification_bool = ph.verify(registered_user['password'], password)
@@ -67,10 +71,6 @@ def check_valid_email(email_sign_up: str) -> bool:
 
 #------{Verify email registration}------
 def verify_email(token: str) -> bool:
-    authorized_users_data = read_auth_file_from_s3(
-        bucket_name=os.getenv("MY_S3_BUCKET"),
-        object_key=OBJECT_KEYS_AUTHETICATION
-    )
     user_found = False
 
     for user in authorized_users_data:
@@ -84,7 +84,8 @@ def verify_email(token: str) -> bool:
         write_auth_file_to_s3(
             authorized_user_data=authorized_users_data,
             bucket_name=os.getenv("MY_S3_BUCKET"),
-            object_key=OBJECT_KEYS_AUTHETICATION
+            object_key=OBJECT_KEYS_AUTHETICATION,
+            use_locally=False
         )
         return True
     return False
@@ -93,8 +94,6 @@ def verify_email(token: str) -> bool:
 #-------{Checks if the email already exists (since email needs to be unique).}--------
 def check_unique_email(email_sign_up: str) -> bool:
     authorized_user_data_master = list()
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
 
     for user in authorized_users_data:
         authorized_user_data_master.append(user['email'])
@@ -121,8 +120,6 @@ def non_empty_str_check(username_sign_up: str) -> bool:
 #-------{Checks if the username already exists (since username needs to be unique), also checks for non - empty username.}--------
 def check_unique_usr(username_sign_up: str):
     authorized_user_data_master = list()
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
 
     for user in authorized_users_data:
         authorized_user_data_master.append(user['username'])
@@ -187,17 +184,15 @@ def register_new_usr(company:str, name_sign_up: str, email_sign_up: str, usernam
         'max_usage': max_usage,
     }
 
-    # ----{ Fetch the user database from S3 }----
-    authorized_user_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
 
     # ----{ Append new user data }----
-    authorized_user_data.append(new_usr_data)
+    authorized_users_data.append(new_usr_data)
 
     # ----{ Save the updated user database back to S3 }----
-    write_auth_file_to_s3(authorized_user_data=authorized_user_data, 
+    write_auth_file_to_s3(authorized_user_data=authorized_users_data, 
                               bucket_name=os.getenv("MY_S3_BUCKET"), 
-                              object_key=OBJECT_KEYS_AUTHETICATION)
+                              object_key=OBJECT_KEYS_AUTHETICATION,
+                              use_locally=False)
     
     #-------{Send verification email to the new user.}--------
     send_verification_email(company=company, username=username_sign_up, email=email_sign_up, verification_token=verification_token, is_oauth=is_oauth)
@@ -206,9 +201,6 @@ def register_new_usr(company:str, name_sign_up: str, email_sign_up: str, usernam
 #-------{Checks if the username exists in the _secret_auth.json file.}--------
 def check_username_exists(user_name: str) -> bool:
     authorized_user_data_master = list()
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
-
     for user in authorized_users_data:
         authorized_user_data_master.append(user['username'])
         
@@ -219,8 +211,6 @@ def check_username_exists(user_name: str) -> bool:
 
 #-------{Checks if the email entered is present in the _secret_auth.json file.}--------
 def check_email_exists(email_forgot_passwd: str):
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
 
     for user in authorized_users_data:
         if user['email'] == email_forgot_passwd:
@@ -236,9 +226,6 @@ def generate_random_passwd() -> str:
 
 #-------{Triggers an email to the user containing the randomly generated password.}--------
 def send_passwd_in_email(username_forgot_passwd: str, email_forgot_passwd: str, company_name: str, random_password: str) -> None:
-    #------{ Read the user database from S3 }------
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
     #------{ Check if the email exists in the user database }------
     email_exists = any(user['email'] == email_forgot_passwd for user in authorized_users_data)
 
@@ -276,10 +263,6 @@ def send_passwd_in_email(username_forgot_passwd: str, email_forgot_passwd: str, 
 
 #-------{Replaces the old password with the newly generated password.}--------
 def change_passwd(email_: str, random_password: str) -> None:
-    # ----{ Fetch the user database from S3 }----
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
-
     # ----{ Update the password }----
     for user in authorized_users_data:
         if user['email'] == email_:
@@ -288,13 +271,11 @@ def change_passwd(email_: str, random_password: str) -> None:
     # ----{ Save the updated user database back to S3 }----
     write_auth_file_to_s3(authorized_user_data=authorized_users_data, 
                               bucket_name=os.getenv("MY_S3_BUCKET"), 
-                              object_key=OBJECT_KEYS_AUTHETICATION)
+                              object_key=OBJECT_KEYS_AUTHETICATION,
+                              use_locally=False)
 
 #-------{Authenticates the password entered against the username when resetting the password.}--------
 def check_current_passwd(email_reset_passwd: str, current_passwd: str) -> bool:
-    authorized_users_data = read_auth_file_from_s3(bucket_name=os.getenv("MY_S3_BUCKET"), 
-                        object_key=OBJECT_KEYS_AUTHETICATION)
-
     for user in authorized_users_data:
         if user['email'] == email_reset_passwd:
             try:
