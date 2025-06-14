@@ -41,3 +41,4 @@ streamlit-lottie==0.0.5
 streamlit-option-menu==0.4.0
 streamlit_oauth==0.1.14
 plotly==6.1.2
+pdfplumber==0.11.7
