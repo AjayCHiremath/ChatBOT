@@ -179,8 +179,8 @@ def register_new_usr(company:str, name_sign_up: str, email_sign_up: str, usernam
         'name': name_sign_up,
         'email': email_sign_up,
         'password': ph.hash(password_sign_up),
-        'email_verified': False,
-        'verification_token': verification_token,
+        'email_verified': False if is_oauth == "not google" else True,
+        'verification_token': verification_token if is_oauth == "not google" else None,
         'max_usage': max_usage,
     }
 

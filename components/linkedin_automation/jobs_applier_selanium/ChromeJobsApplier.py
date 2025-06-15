@@ -5,13 +5,19 @@ import streamlit as st
 from components.linkedin_automation.jobs_applier_selanium.helpers.DataPreprocess import data_chunking, data_cleaning
 from components.linkedin_automation.jobs_applier_selanium.data.configurations import section_map_data_preprocessing
 from components.linkedin_automation.jobs_applier_selanium.helpers.ApplyForJobs import start_application_process
-
+from utils.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
 
 # ---{ Start external job application by reading and cleaning data }---
 def start_external_apply(import_path="logs/jobs_applied/linkedin_jobs.xlsx", log_base="logs/job_application_logs/logs_text/", echo=False):
     
+    #---{Read from AWS S3 }---
+    import_file = read_auth_file_from_s3(
+        bucket_name=st.session_state.aws_env.get("MY_S3_BUCKET"),
+        object_key=import_path
+    )
+
     # ---{ Read job data from Excel }---
-    jobs_data = pd.read_excel(io=import_path, index_col=0)
+    jobs_data = pd.read_excel(io=import_file, index_col=0)
 
     # ---{ Load job settings from session state }---
     job_settings = {
