@@ -46,6 +46,9 @@ class ChatBotApp:
             "current_input": "",
             "chat_history_store": {},
             "response_count": 0,
+            "cooldown_until": None,
+            "request_timestamps": None,
+            "usage_history": None,
 
             # File/resume
             "file_upload_key": 0,
