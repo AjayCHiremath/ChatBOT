@@ -23,7 +23,7 @@ LOTTIE_FILE_PATH = "components/main_ui/Animation2.json"
 
 # Search parameters
 SEARCH_TYPE = "similarity"  # or 'mmr', 'similarity_score_threshold'
-SEARCH_KWARGS = {"k": 15}  # e.g., "score_threshold": 0.7, "lambda_mult": 0.5
+SEARCH_KWARGS = {"k": 10}  # e.g., "score_threshold": 0.7, "lambda_mult": 0.5
 
 # Metadata dictionary
 METADATA = {"session_id": get_session_id()}
