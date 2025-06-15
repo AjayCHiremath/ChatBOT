@@ -94,6 +94,9 @@ def check_usage_history():
 
     #---{ Find user in auth data }---
     user = next((u for u in auth_data if u.get('username') == username), None)
+    
+    if user is None:
+        st.rerun()
 
     #----{ Apply rate limit }----
     is_rate_limited(user, now, limit=5)
