@@ -6,7 +6,7 @@ from langchain_core.messages.utils import count_tokens_approximately
 from utils.logger.EventLogger import log_message
 from ai.pdf_summarizer.memory.Memory import get_memory
 
-from utils.global_variables import MAX_TOKENS_CHAT_HISTORY
+from utils.global_variables import MAX_TOKENS_CHAT_HISTORY, MAX_TOTAL_TOKENS, DEFAULT_MAX_NEW_TOKENS
 
 # ---{ Helper function to trim chat history }---
 def build_trim_step():
@@ -21,6 +21,53 @@ def build_trim_step():
                                           start_on="human"
                             )}
          )
+
+#----{ Helper function to limit token for input flow}---
+def build_input_token_limiter(max_total, max_new):
+    def limiter(inputs):
+        question = inputs.get("reframed_question", "")
+        context = inputs.get("context", "")
+        chat_history = inputs.get("chat_history", [])
+
+        # Token limit for input (question + chat + context)
+        total_allowed = max_total - max_new
+
+        # Approximate token usage
+        question_tokens = count_tokens_approximately(question)
+        context_tokens = count_tokens_approximately(context)
+        history_tokens = count_tokens_approximately(chat_history)
+        total_input_tokens = question_tokens + context_tokens + history_tokens
+
+        # Only trim if absolutely necessary
+        if total_input_tokens > total_allowed:
+            excess = total_input_tokens - total_allowed
+
+            # Try trimming context first
+            if context_tokens > excess:
+                trimmed_context = context.split()[:-excess]
+                context = " ".join(trimmed_context)
+            else:
+                # Drop context and trim chat history if still over limit
+                context = ""
+                excess -= context_tokens
+                inputs["chat_history"] = trim_messages(
+                    chat_history,
+                    max_tokens=history_tokens - excess,
+                    strategy="last",
+                    token_counter=count_tokens_approximately,
+                    include_system=True,
+                    allow_partial=False,
+                    start_on="human"
+                )
+
+        # Return safely trimmed input
+        return {
+            **inputs,
+            "context": context,
+            "max_new_tokens": max_new
+        }
+
+    return RunnableLambda(limiter)
 
 # ---{ Helper function to build the Reframing Chain }---
 def build_chain(prompt, model, log_base="logs/chatbot/", echo=False):
@@ -43,6 +90,7 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
     try:
         # ---{Get Trimmer function}---
         trimmer = build_trim_step()
+        token_limiter = build_input_token_limiter(MAX_TOTAL_TOKENS, DEFAULT_MAX_NEW_TOKENS)
         
         chain = RunnableSequence(
             #---------{Pass the original inputs as-is.}---------
@@ -135,6 +183,9 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
             #     log_message(f"[Step] Context concatenated: {inputs.get('context')}", log_file=log_base, echo=echo),
             #     inputs
             # )[1]) |
+
+            #---------{Token limitter}-------------
+            token_limiter |
 
             #---------{Summarization step:}---------
             #---------{Send the combined 'context' and 'reframed_question' to the summarization chain.}---------
