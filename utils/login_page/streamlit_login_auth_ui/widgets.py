@@ -1,7 +1,6 @@
 import streamlit as st
 import os
 from streamlit_oauth import OAuth2Component
-import secrets
 import requests
 
 from streamlit_lottie import st_lottie
@@ -40,6 +39,8 @@ class __login__:
             fetched_cookies = self.cookies
             if '__streamlit_login_signup_ui_username__' in fetched_cookies.keys():
                 username=fetched_cookies['__streamlit_login_signup_ui_username__']
+                if '_' in username:
+                    return username.split('_')[0]  # Return the part before the underscore
                 return username
  
 
@@ -117,10 +118,8 @@ class __login__:
                         email_exists, registered_username = check_email_exists(email)
 
                         if not email_exists:
-                            # Auto-generate username with a suffix to ensure uniqueness
+                            # Auto-generate username
                             base_username = email.split("@")[0]
-                            random_suffix = secrets.token_hex(2)
-                            new_username = f"{base_username}_{random_suffix}"
 
                             # Generate a secure random password
                             random_password = generate_random_passwd()
@@ -130,7 +129,7 @@ class __login__:
                                 company=self.company_name,
                                 name_sign_up=name,
                                 email_sign_up=email,
-                                username_sign_up=new_username,
+                                username_sign_up=base_username,
                                 password_sign_up=random_password,
                                 is_oauth="google",
                                 max_usage=0
@@ -138,13 +137,13 @@ class __login__:
 
                             # Email the user their generated password
                             send_passwd_in_email(
-                                username_forgot_passwd=new_username,
+                                username_forgot_passwd=base_username,
                                 email_forgot_passwd=email,
                                 company_name=self.company_name,
                                 random_password=random_password
                             )
 
-                            registered_username = new_username
+                            registered_username = base_username
                             st.toast("✔️ Google account auto-registered! Temporary password sent to your email.")
 
                 # Proceed with login

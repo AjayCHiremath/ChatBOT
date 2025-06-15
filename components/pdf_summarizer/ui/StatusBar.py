@@ -45,7 +45,7 @@ def get_status_data_ingestion(files, log_base="logs/chatbot/", echo=False):
     try:
         #---{Display status to user}---
         placeholder = st.empty()
-        with placeholder.status("📥 Downloading data...", expanded=True):
+        with placeholder.status("📥 Uploading data...", expanded=True):
             try:
                 documents = load_documents(files=files, log_base=log_base, echo=echo)
                 log_message("[Success] Documents loaded successfully.", log_file=log_base, echo=echo)
