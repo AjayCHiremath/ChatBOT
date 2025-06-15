@@ -126,7 +126,7 @@ if __name__ == "__main__":
         if st.session_state.applying_jobs:
             lk.linkedin_jobs_applier()
 
-        if os.path.exists("logs/jobs_applied/linkedin_jobs.xlsx"):
+        if os.path.exists("logs/excel/linkedin_jobs.xlsx"):
             st.session_state.completed_scrapping = True
 
         if st.session_state.applying_jobs_ext:

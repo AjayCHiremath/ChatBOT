@@ -1,10 +1,9 @@
-# LangChain Streamlit ChatBot
 
 A scalable, modular, and production-ready chatbot platform powered by **LangChain**, **Streamlit**, and cloud-based **LLMs** (via Together AI). Designed for extensibility, this platform supports advanced features like document summarization, LinkedIn job automation, vector-based retrieval, and memory-aware multi-agent systems.
 
 ---
 
-## 🔥 Key Features
+## 🧱 Project Structure (Detailed)
 
 - **LLaMA 3 and DeepSeek models** integrated via Together API for robust inference  
 - **Streaming token-level output** for real-time assistant responses  
@@ -16,7 +15,8 @@ A scalable, modular, and production-ready chatbot platform powered by **LangChai
   - Multimodal readiness (PDFs, images, text; OCR support upcoming)
   - Custom tool and model orchestration logic
 
----
+├── .streamlit/
+│   └── config.toml                      # 🎨 Streamlit theme configuration
 
 ## 🗺️ Architecture Overview
 Below is the system flow of the application from user input to model orchestration:
@@ -125,6 +125,32 @@ LLMCHATBOT/
 │           ├── login_utils.py         # 🛠️ Helper functions for validating login credentials
 │           └── widgets.py             # 🧩 Custom login widgets for interactive UI
 ```
+
+---
+
+## 🔥 Key Features (In Depth)
+
+✨ **Modular AI Components**
+- Designed to separate logic and AI modules for easy testing, scalability, and maintenance.
+
+📄 **Document Summarizer**
+- Ingests and splits PDFs into chunks.
+- Embeds text using Together AI’s `m2-bert-80M-8k-retrieval`.
+- Stores embeddings in Pinecone.
+- Uses prompt engineering, RAG, memory, and chains for interactive Q&A.
+
+🤖 **LinkedIn Job Application Automator (Educational Purposes Only)**
+- Selenium automation to scrape and apply to LinkedIn/Workday jobs.
+- LLMs (in progress) for dynamic question responses and resume customization.
+
+🔒 **Security & Stability**
+- Authentication with login page.
+- Input validation, session management, content moderation.
+- Rate limiting to avoid overload.
+
+🗂️ **Session & User Logging**
+- Logs stored in S3 by session and user.
+- Supports easy monitoring and debugging.
 
 ---
 

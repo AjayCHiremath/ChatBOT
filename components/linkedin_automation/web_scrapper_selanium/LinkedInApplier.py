@@ -11,7 +11,7 @@ from components.linkedin_automation.web_scrapper_selanium.helpers.TerminateProce
 from utils.logger.EventLogger import log_message
 from utils.aws_utils import read_auth_file_from_s3, write_auth_file_to_s3
 
-# import pyautogui
+import pyautogui
 import pandas as pd
 import streamlit as st
 import os
@@ -96,11 +96,11 @@ def linkedin_jobs_applier():
         driver = apply_all_filters(driver, wait, short_wait, st.session_state.get("job_settings_backup", {}), log_base, echo)
 
         #-----------------------{ Show confirmation dialog with applied filters }--------------------------
-        # all_applied = pyautogui.confirm(
-        #         text="Did all the filters you wanted were applied?\n",
-        #         title="✅ Filters Applied",
-        #         buttons=["Yes","No"]
-        #     )
+        all_applied = pyautogui.confirm(
+                text="Did all the filters you wanted were applied?\n",
+                title="✅ Filters Applied",
+                buttons=["Yes","No"]
+            )
         
         # if all_applied=="Yes":
         driver = applied_filters(driver, wait, short_wait, export_path, log_base, echo)
@@ -112,3 +112,4 @@ def linkedin_jobs_applier():
         #     )
         #     if corrected == "Okay":
         #         driver = applied_filters(driver, wait, short_wait, export_path, log_base, echo)
+
