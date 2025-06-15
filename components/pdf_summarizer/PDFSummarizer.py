@@ -95,6 +95,8 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
         try:
             
             if st.session_state.submitted and st.session_state.user_input and st.session_state.documents and st.session_state.embedded_and_vectorstore:
+                #---{ Update usage history }---
+                st.session_state.response_count += 1
                 st.session_state.generating_response = True
                 st.session_state.run_chain = True
                 st.session_state.current_input = st.session_state.user_input
@@ -104,9 +106,7 @@ def run_pdf_summarizer(log_base="logs/chatbot/", echo=True):
             log_message(f"[Error] Handling user submission: {e}", log_file=log_base, echo=echo)
 
         # ---{ Run the chat chain and stream the assistant response }---
-        if st.session_state.run_chain:
-            #---{ Update usage history }---
-            st.session_state.response_count += 1
+        if st.session_state.run_chain:            
             check_usage_history()
             # ---{ Main Process }---
             with response_container:

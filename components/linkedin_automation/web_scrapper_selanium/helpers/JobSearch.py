@@ -24,7 +24,7 @@ def input_job_title(driver, wait, job_keyword, log_base="logs/login_page_logs/",
             job_input.clear()
             job_input.send_keys(job_keyword)
 
-            log_message(f"✅ Entered job title: {job_keyword}", log_file=log_base, echo=echo)
+            log_message(f"✔️ Entered job title: {job_keyword}", log_file=log_base, echo=echo)
             return driver
         except Exception as e:
             log_message(f"❌ Failed to enter job title: {e}", log_file=log_base, echo=echo)
@@ -57,7 +57,7 @@ def input_location(driver, wait, location_keyword, log_base="logs/login_page_log
             time.sleep(0.5)
             location_input.send_keys(Keys.ENTER)  # Confirm selection
 
-            log_message(f"✅ Entered job location: {location_keyword}", log_file=log_base, echo=echo)
+            log_message(f"✔️ Entered job location: {location_keyword}", log_file=log_base, echo=echo)
             return driver
         except Exception as e:
             log_message(f"❌ Failed to enter job location: {e}", log_file=log_base, echo=echo)

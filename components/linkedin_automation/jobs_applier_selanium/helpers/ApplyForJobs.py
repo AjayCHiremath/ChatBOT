@@ -6,9 +6,11 @@ from components.linkedin_automation.jobs_applier_selanium.helpers.LoginPage impo
 from components.linkedin_automation.jobs_applier_selanium.data.configurations import profile, my_experience_data, my_information_data
 from components.linkedin_automation.jobs_applier_selanium.helpers.myInformationPage import my_information_page
 from components.linkedin_automation.jobs_applier_selanium.helpers.myExperiencePage import my_experience_form
+from components.linkedin_automation.web_scrapper_selanium.helpers.TerminateProcess import exit_if_stopped
+from utils.logger.EventLogger import log_message
 
 import time
-# import pyautogui
+import pyautogui
 
 #-------------------{Main application process function}---------------------------
 def start_application_process(profile_data, log_base="logs/job_application_logs/logs_text/", echo=False):
@@ -18,11 +20,13 @@ def start_application_process(profile_data, log_base="logs/job_application_logs/
     short_wait = WebDriverWait(driver, 1)
 
     #-------------------{Extract application URLs that contain 'myworkdayjobs.com'}---------------------------
-    urls = profile_data[profile_data["Application Link"].str.contains("myworkdayjobs.com", na=False)]["Application Link"][2:]
+    urls = profile_data[profile_data["Application Link"].str.contains("myworkdayjobs.com", na=False)]["Application Link"]
 
     #-------------------{Iterate through each application link}---------------------------
     for i, url in enumerate(urls):
-        print(f"\n🌐 Visiting {i}: {url}")
+        #-------------------{Exit if the process is stopped}---------------------------
+        exit_if_stopped(context="linkedin_jobs_applier", driver=driver, log_file=log_base, echo=echo)
+        log_message(f"🌐 Visiting {i}: {url}", log_file=log_base, echo=echo)
 
         #-------------------{Open Workday URL and clear session data}---------------------------
         send_workday_url(driver, url)
@@ -61,7 +65,7 @@ def start_application_process(profile_data, log_base="logs/job_application_logs/
 
 
         #-------------------{Prompt user for manual verification of submission}---------------------------
-        # if pyautogui.confirm(text='Correct??',title='Manual Auth Required',buttons=['Yes', 'No']) == 'Yes':
-        #     print("✔ User confirmed authentication.")
+        if pyautogui.confirm(text='Correct??',title='Manual Auth Required',buttons=['Yes', 'No']) == 'Yes':
+            print("✔ User confirmed authentication.")
 
-            # continue
+            continue

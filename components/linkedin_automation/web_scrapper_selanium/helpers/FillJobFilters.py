@@ -49,7 +49,7 @@ def switch_based_filter(driver, wait, filter_group, log_base="logs/login_page_lo
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", toggle_btn)
             driver.execute_script("arguments[0].click();", toggle_btn)
 
-            msg = f"✅ Toggled: {filter_group}"
+            msg = f"✔️ Toggled: {filter_group}"
         except Exception as e:
             msg = f"⚠️ Toggle fallback failed: {filter_group} → {e}"
 
@@ -73,12 +73,12 @@ def radio_based_filter(driver, wait, val, filter_label, log_base="logs/login_pag
             )
 
             label_elem = wait.until(EC.element_to_be_clickable((By.XPATH, label_xpath)))
-            log_message("✅ Found label element. Scrolling and clicking...", log_file=log_base, echo=echo)
+            log_message("✔️ Found label element. Scrolling and clicking...", log_file=log_base, echo=echo)
 
             driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", label_elem)
             driver.execute_script("arguments[0].click();", label_elem)
 
-            msg = f"✅ Applied: {filter_label} → {val}"
+            msg = f"✔️ Applied: {filter_label} → {val}"
         except Exception as e:
             msg = f"⚠️ {filter_label} filter failed: {e}"
 
@@ -134,7 +134,7 @@ def handle_addable_input_filter(driver, short_wait, label, value, log_base="logs
             except:
                 log_message("⚠️ Input disappeared after selection (normal)", log_file=log_base, echo=echo)
 
-            log_message(f"✅ Added '{value}' to {label} filter", log_file=log_base, echo=echo)
+            log_message(f"✔️ Added '{value}' to {label} filter", log_file=log_base, echo=echo)
 
         except Exception as final_error:
             log_message(f"⚠️ Failed to add '{value}' to {label}: {final_error}", log_file=log_base, echo=echo)
@@ -170,7 +170,7 @@ def multiselect_based_filter(driver, wait, short_wait, values, filter_group, log
                 fieldset = wait.until(EC.presence_of_element_located((By.XPATH, fieldset_xpath)))
 
                 driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", fieldset)
-                log_message(f"✅ Found fieldset for: {filter_group}", log_file=log_base, echo=echo)
+                log_message(f"✔️ Found fieldset for: {filter_group}", log_file=log_base, echo=echo)
 
                 if filter_group.strip() in addedable_btns.values():
                     driver = handle_addable_input_filter(driver, short_wait, filter_group, val, log_base, echo)
@@ -196,7 +196,7 @@ def multiselect_based_filter(driver, wait, short_wait, values, filter_group, log
                             short_wait.until(lambda d: label.is_displayed() and label.is_enabled())
                             driver.execute_script("arguments[0].click();", label)
                             success = True
-                            log_message(f"✅ Applied: {label_text}", log_file=log_base, echo=echo)
+                            log_message(f"✔️ Applied: {label_text}", log_file=log_base, echo=echo)
                             break
 
                     except Exception as e:

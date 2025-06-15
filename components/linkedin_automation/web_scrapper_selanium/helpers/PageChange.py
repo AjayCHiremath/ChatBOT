@@ -12,7 +12,7 @@ def go_to_next_page(driver, page, log_base="logs/login_page_logs/", echo=False):
             driver.execute_script("arguments[0].click();", next_btn)
             time.sleep(3)         
         except NoSuchElementException:
-            log_message("✅ No more pages to scrape.", log_file=log_base, echo=echo)
+            log_message("✔️ No more pages to scrape.", log_file=log_base, echo=echo)
             return True
     else:
         # ------{If applying_jobs flag is off, exit cleanly}------

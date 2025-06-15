@@ -33,7 +33,7 @@ def wait_for_2fa_and_save(driver, cookies_file, log_base, echo, max_wait=120):
 
         # ------{Check if login was successful}------
         if is_loggedIn(driver):
-            log_message(message="✅ 2FA completed. Logged in.", log_file=log_base, echo=echo)
+            log_message(message="✔️ 2FA completed. Logged in.", log_file=log_base, echo=echo)
             # ------{Save cookies for future use}------
             save_cookies(driver, cookies_file, log_base, echo)
             break
@@ -70,7 +70,7 @@ def login_to_linkedin(driver, log_base="logs/login_page_logs/", echo=True):
                 time.sleep(2)
 
                 if is_loggedIn(driver):
-                    log_message(message="✅ Logged in using saved cookies.", log_file=log_base, echo=echo)
+                    log_message(message="✔️ Logged in using saved cookies.", log_file=log_base, echo=echo)
                     return
                 else:
                     log_message(message="⚠️ Saved cookies failed, attempting manual login.", log_file=log_base, echo=echo)

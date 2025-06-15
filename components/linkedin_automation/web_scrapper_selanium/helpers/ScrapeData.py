@@ -86,7 +86,7 @@ def scrape_all_jobs(driver, wait, short_wait, log_base="logs/login_page_logs/", 
                     if (job_data.get("Job Title") and job_data.get("Company Name") and 
                         job_data.get("Job Description") and job_data.get("Application Link")):
                         results.append(job_data)
-                        log_message(f"✅ Scraped {j}/{total_jobs_to_apply}: {job_data['Job Title']} @ {job_data['Company Name']}",
+                        log_message(f"✔️ Scraped {j}/{total_jobs_to_apply}: {job_data['Job Title']} @ {job_data['Company Name']}",
                                     log_file=log_base, echo=echo)
                         j += 1
                     else:

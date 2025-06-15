@@ -1,6 +1,8 @@
 import spacy
 import pandas as pd
 import streamlit as st
+import os
+from io import BytesIO
 
 from components.linkedin_automation.jobs_applier_selanium.helpers.DataPreprocess import data_chunking, data_cleaning
 from components.linkedin_automation.jobs_applier_selanium.data.configurations import section_map_data_preprocessing
@@ -19,21 +21,32 @@ def start_external_apply(import_path="logs/jobs_applied/linkedin_jobs.xlsx", log
     # ---{ Read job data from Excel }---
     jobs_data = pd.read_excel(io=import_file, index_col=0)
 
-    # ---{ Load job settings from session state }---
-    job_settings = {
-        key: value
-        for key, value in st.session_state.get("job_settings_backup_ext", {}).items()
-        if key in st.session_state.get("keys_ext", [])
-    }
+        # ---{ Load job settings from session state }---    
+        job_settings = {
+            key: value
+            for key, value in st.session_state.get("job_settings_backup_ext", {}).items()
+            if key in st.session_state.get("keys_ext", [])
+        }
 
-    # ---{ Clean job data before application }---
-    jobs_data = data_cleaning(jobs_data.reset_index(), job_settings, log_base, echo)
+        # ---{ Clean job data before application }---
+        log_message("🔍 Cleaning job data before application...", log_file=log_base, echo=echo)
+        jobs_data = data_cleaning(jobs_data.reset_index(), job_settings, log_base, echo)
+        
+        if jobs_data is not None and not jobs_data.empty:
+            # Load spaCy model
+            log_message("🔍 Loading spaCy model for data chunking...", log_file=log_base, echo=echo)
+            nlp = spacy.load("en_core_web_sm")
 
-    # Load spaCy model
-    nlp = spacy.load("en_core_web_sm")
-
-    # ---{ Making Chunks of Data for duplicate or repeated data columns }---
-    jobs_data_chunks = data_chunking(jobs_data, nlp, section_map_data_preprocessing)
-
-    start_application_process(jobs_data_chunks, log_base, echo)
-
+            # ---{ Making Chunks of Data for duplicate or repeated data columns }---
+            jobs_data_chunks = data_chunking(jobs_data, nlp, section_map_data_preprocessing)
+            
+            if jobs_data_chunks is None:
+                log_message("❌ Data chunking failed or no data to process.", log_file=log_base, echo=echo)
+                return
+            # ---{ Start the job application process }---
+            log_message("🚀 Starting the job application process...", log_file=log_base, echo=echo)
+            start_application_process(jobs_data_chunks, log_base, echo)
+    else:
+        # ------{If applying_jobs flag is off, exit cleanly}------
+        log_message(message="🛑 Terminating Browser: ALL FILTERS BTN CLICK", log_file=log_base, echo=echo)
+        return

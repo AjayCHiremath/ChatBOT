@@ -3,7 +3,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import time
-# import pyautogui
+import pyautogui
 import pygame
 
 # -------------------{Function to open URL in Workday and clear local/session storage}---------------------------
@@ -181,19 +181,19 @@ def handle_manual_authentication(log_base="logs/job_application_logs/logs_text/"
         while time.time() - start_time < 300:
             try:
                 print("5 minutes left for manual authentication confirmation...")
-                # response = pyautogui.confirm(
-                #     text='Have you completed manual authentication?',
-                #     title='Manual Auth Required',
-                #     buttons=['Yes', 'No']
-                # )
-                # if response == 'Yes':
-                #     print("✔ User confirmed authentication.")
-                #     return True
-                # elif response == 'No':
-                #     print("⏭️ User declined. Skipping job.")
-                #     return False
-                # else:
-                #     time.sleep(5)
+                response = pyautogui.confirm(
+                    text='Have you completed manual authentication?',
+                    title='Manual Auth Required',
+                    buttons=['Yes', 'No']
+                )
+                if response == 'Yes':
+                    print("✔ User confirmed authentication.")
+                    return True
+                elif response == 'No':
+                    print("⏭️ User declined. Skipping job.")
+                    return False
+                else:
+                    time.sleep(5)
             except Exception:
                 print("⚠️ Error during manual authentication prompt.")
         print("⏳ Timeout: No manual authentication confirmed.")

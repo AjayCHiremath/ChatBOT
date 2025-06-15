@@ -240,7 +240,7 @@ def parse_job_preferences_and_skills(driver, short_wait, log_base="logs/login_pa
     try:
         ActionChains(driver).send_keys(Keys.ESCAPE).perform()
         time.sleep(0.5)
-        log_message("✅ Closed preferences & skills modal.", log_base, echo)
+        log_message("✔️ Closed preferences & skills modal.", log_base, echo)
     except Exception as e:
         log_message(f"⚠️ Failed to close modal with ESC: {e}", log_base, echo)
 

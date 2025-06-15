@@ -6,6 +6,7 @@ import time
 
 from components.linkedin_automation.jobs_applier_selanium.data.configurations import my_information_data
 from components.linkedin_automation.jobs_applier_selanium.helpers.LoginPage import click_apply_buttons
+from components.linkedin_automation.web_scrapper_selanium.helpers.TerminateProcess import exit_if_stopped
 
 
 #-------------------------------------------MY INFORMATION PAGE---------------------------------------------

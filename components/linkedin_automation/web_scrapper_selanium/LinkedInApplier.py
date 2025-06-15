@@ -37,7 +37,8 @@ def update_or_append_excel(df_new, export_path, log_base="logs/login_page_logs/"
 
     read_file = read_auth_file_from_s3(
         bucket_name=os.getenv("MY_S3_BUCKET"),
-        object_key=export_path
+        object_key=export_path,
+        use_locally=False 
     )
 
     # If file exists, load and update
@@ -54,7 +55,8 @@ def update_or_append_excel(df_new, export_path, log_base="logs/login_page_logs/"
     write_auth_file_to_s3(
         authorized_user_data=df_updated,
         bucket_name=os.getenv("MY_S3_BUCKET"),
-        object_key=export_path
+        object_key=export_path,
+        use_locally=False
     )
 
 
