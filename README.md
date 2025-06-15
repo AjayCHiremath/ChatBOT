@@ -1,7 +1,7 @@
 
 A scalable, modular, and production-ready chatbot platform powered by **LangChain**, **Streamlit**, and cloud-based **LLMs** (via Together AI). Designed for extensibility, this platform supports advanced features like document summarization, LinkedIn job automation, vector-based retrieval, and memory-aware multi-agent systems.
 
----
+Welcome to the **ChatBOT Project** — a modular, real-time AI assistant built with 💡 **LangChain**, 🚀 **Streamlit**, and 🤖 **Together.ai**! This system features token-level streaming, plug-and-play models/chains, and is accessible via a live demo.
 
 ## 🧱 Project Structure (Detailed)
 
@@ -15,8 +15,8 @@ A scalable, modular, and production-ready chatbot platform powered by **LangChai
   - Multimodal readiness (PDFs, images, text; OCR support upcoming)
   - Custom tool and model orchestration logic
 
-├── .streamlit/
-│   └── config.toml                      # 🎨 Streamlit theme configuration
+
+---
 
 ## 🗺️ Architecture Overview
 Below is the system flow of the application from user input to model orchestration:
