@@ -185,6 +185,22 @@ streamlit run ChatBotApp.py
 
 ---
 
+## 📊 Evaluation Results
+
+| #  | QUESTION                                                                 | BLEU   | ROUGE-L | Cosine | BERTScore (F1) |
+|----|--------------------------------------------------------------------------|--------|----------|--------|----------------|
+| 0  | What is the unital classification theorem and ...                        | 0.0303 | 0.2353   | 0.8127 | 0.8641         |
+| 1  | How does the Jiang–Su algebra Z function as a ...                        | 0.0244 | 0.2522   | 0.8481 | 0.8447         |
+| 2  | What is Kirchberg’s dichotomy and why is it fu...                        | 0.0062 | 0.1762   | 0.7853 | 0.8535         |
+| 3  | How do quasitraces relate to the problem of st...                        | 0.0479 | 0.2010   | 0.8407 | 0.8563         |
+| 4  | Why is the Cuntz semigroup an effective tool b...                        | 0.0189 | 0.1785   | 0.8634 | 0.8379         |
+| 5  | What roles do nuclear dimension and decomposit...                        | 0.0217 | 0.2019   | 0.8599 | 0.8462         |
+| 6  | What problem does the Transformer architecture...                        | 0.0319 | 0.1732   | 0.7629 | 0.8408         |
+| 7  | How does positional encoding enable Transforme...                        | 0.0000 | 0.0809   | 0.7854 | 0.8554         |
+| 8  | Explain the scaled dot-product attention formu...                        | 0.0000 | 0.0000   | 0.0488 | 0.7741         |
+| 9  | What is RLVR, and how does it differ from trad...                        | 0.0007 | 0.0920   | 0.7015 | 0.8391         |
+
+---
 ## 🧭 Roadmap
 
 ### ✅ Implemented Features
@@ -212,3 +228,15 @@ streamlit run ChatBotApp.py
 | **Realtime Progress Logs**       | Show scraping and application logs in real-time within Streamlit UI. |
 | **Admin Dashboard**              | Dashboard to track API usage, errors, and system logs. |
 | **Conversation Export**          | Export user conversations to downloadable PDF/text format. |
+
+### 🔐 Upcoming Security Features
+
+| Feature                          | Description |
+|----------------------------------|-------------|
+| **Prompt Injection Prevention**  | Mitigate malicious prompt manipulations that attempt to override system instructions. |
+| **SQL Injection Protection**     | Sanitize and validate input to prevent injection of raw SQL into database queries. |
+| **Code Injection Defense**       | Restrict and inspect code execution to prevent arbitrary or harmful code execution. |
+| **Toxicity & Abuse Detection**   | Detect and filter toxic, abusive, or harmful language using moderation models. |
+| **PII Redaction**                | Automatically identify and redact personally identifiable information (names, emails, SSNs, etc.). |
+| **Stopword Filtering**           | Apply stopword lists to remove unnecessary or manipulative input content during preprocessing. |
+| **Role-Based Authentication**    | Secure user access with roles and permissions for admins, analysts, and guests. |
