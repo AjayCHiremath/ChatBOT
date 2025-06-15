@@ -34,6 +34,8 @@ OBJECT_KEYS_CHAT_HISTORY = f"{get_session_id()}.json"
 
 # Model configuration
 MODEL_MAX_TOKENS = 3000
+MAX_TOTAL_TOKENS = 8192
+DEFAULT_MAX_NEW_TOKENS = 1024
 
 # ICONS
 AI_ICON = ("components/pdf_summarizer/ui/avatar/ai.png")
