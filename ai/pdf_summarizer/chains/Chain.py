@@ -33,6 +33,10 @@ def build_chain(prompt, model, log_base="logs/chatbot/", echo=False):
         log_message(f"[Error] build_chain: {e}", log_file=log_base, echo=echo)
         raise
 
+# ---{ Helper function to clean metadata }---
+def clean_metadata(meta):
+    keys_to_keep = ["page", "total_pages", "source", "session_id"]
+    return {k: v for k, v in meta.items() if k in keys_to_keep}
 
 # ---{ Helper function to build Sequential Chat Chain }---
 def build_chat_chain(reframing_chain, summarization_chain, retriever, output_parser, log_base="logs/chatbot/", echo=False):
@@ -47,11 +51,11 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
             #---------{Trim chat history to fit within token limits for context window.}---------
             trimmer |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Trimmed chat history: {inputs.get('chat_history', [])}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Trimmed chat history: {inputs.get('chat_history', [])}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Prepare inputs explicitly for the reframing chain:}---------
             #---------{Extract 'question' and keep 'chat_history' from the previous step.}---------
@@ -60,11 +64,11 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
                 "chat_history": inputs.get("chat_history", [])
             }) |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Prepared inputs for reframing: {inputs}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Prepared inputs for reframing: {inputs}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Call the reframing chain explicitly.}---------
             #---------{The reframing_chain is expected to produce an AIMessage object (the reframed question).}---------
@@ -77,11 +81,11 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
                 "chat_history": inputs["chat_history"]
             }) |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Reframing output: {inputs.get('reframed_output')}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Reframing output: {inputs.get('reframed_output')}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Extract the final reframed question from the AIMessage object (if available).}---------
             #---------{We remove any chain-of-thought or formatting by stripping.}---------
@@ -93,11 +97,11 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
                 "chat_history": inputs["chat_history"]
             }) |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Reframed question extracted: {inputs.get('reframed_question')}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Reframed question extracted: {inputs.get('reframed_question')}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Document retrieval step using retriever:}---------
             #---------{Use the reframed question to get relevant context documents.}---------
@@ -108,26 +112,29 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
                 "context_docs": retriever.invoke(inputs["reframed_question"]) or []
             }) |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Retrieved context docs: {inputs.get('context_docs')}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Retrieved context docs: {inputs.get('context_docs')}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Combine the retrieved documents into a single text string ('context'):}---------
             #---------{Concatenate all page contents from the documents.}---------
             #---------{Also forward 'reframed_question' and 'chat_history'.}---------
             RunnableLambda(lambda inputs: {
-                "context": "".join(doc.page_content for doc in (inputs["context_docs"] or [])),
+                "context": "".join(
+                    f"[Metadata: {', '.join(f'{k}={v}' for k, v in clean_metadata(doc.metadata).items())}]\n{doc.page_content}"
+                    for doc in (inputs["context_docs"] or [])
+                ),
                 "reframed_question": inputs["reframed_question"],
                 "chat_history": inputs["chat_history"]
             }) |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Context concatenated: {inputs.get('context')}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Context concatenated: {inputs.get('context')}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Summarization step:}---------
             #---------{Send the combined 'context' and 'reframed_question' to the summarization chain.}---------
@@ -142,11 +149,11 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
                 "chat_history": inputs["chat_history"]
             }) |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Summary output: {inputs.get('summary_output')}", log_file=log_base, echo=echo),
-                inputs
-            )[1]) |
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Summary output: {inputs.get('summary_output')}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[1]) |
 
             #---------{Prepare the final answer:}---------
             #---------{Parse the summarization output (AIMessage object or string).}---------
@@ -158,14 +165,15 @@ def build_chat_chain(reframing_chain, summarization_chain, retriever, output_par
                     else str(inputs["summary_output"])
                 ),
                 "reframed_question": inputs["reframed_question"]
-            }) |
+            }) 
+            # |
 
-            #---------{Logging Steps}---------
-            RunnableLambda(lambda inputs: (
-                log_message(f"[Step] Final answer parsed: {inputs.get('answer')}", log_file=log_base, echo=echo),
-                log_message(f"[Step] Reframed question parsed: {inputs.get('reframed_question', [])}", log_file=log_base, echo=echo),
-                inputs
-            )[-1])
+            # #---------{Logging Steps}---------
+            # RunnableLambda(lambda inputs: (
+            #     log_message(f"[Step] Final answer parsed: {inputs.get('answer')}", log_file=log_base, echo=echo),
+            #     log_message(f"[Step] Reframed question parsed: {inputs.get('reframed_question', [])}", log_file=log_base, echo=echo),
+            #     inputs
+            # )[-1])
         )
 
         

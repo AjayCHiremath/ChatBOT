@@ -63,8 +63,9 @@ def create_vectorstore(embeddings, documents=None, log_base="logs/chatbot/", ech
 
             # ---{Push documents if provided}---
             if documents:
+                metadatas = [{**METADATA, **doc.metadata} for doc in documents]
                 texts = [doc.page_content for doc in documents]
-                vectorstore.add_texts(texts, metadatas=[METADATA])
+                vectorstore.add_texts(texts=texts, metadatas=metadatas)
                 log_message("[Success] Documents pushed to Pinecone.", log_file=log_base, echo=echo)
 
             return vectorstore

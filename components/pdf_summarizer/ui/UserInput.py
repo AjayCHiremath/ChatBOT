@@ -12,7 +12,7 @@ def get_file():
 
     # ---------------------{ Upload Limit Status }---------------------
     if len(st.session_state.get(f"uploaded_pdfs_{st.session_state.file_upload_key}", [0])) > max_files:
-        st.info("✅ Maximum of 3 PDF files uploaded.")
+        st.info("✔️ Maximum of 3 PDF files uploaded.")
 
     # ---------------------{ File Uploader Widget }---------------------
     st.file_uploader(
@@ -23,11 +23,11 @@ def get_file():
         disabled=disabled,
         key=f"uploaded_pdfs_{st.session_state.file_upload_key}",
     )
-    
+
 # ---------------------{ Chat Input Form Builder }---------------------
 def create_input_form():
     # ---------------------{ User Message Input Form }---------------------
-    with st.form(key="user_input_form", clear_on_submit=False):
+    with st.form(key="user_input_form", clear_on_submit=True):
         cols = st.columns([7, 1, 1, 1])
 
         with cols[0]:

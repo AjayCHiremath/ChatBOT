@@ -4,14 +4,14 @@ from utils.logger.SessionId import get_session_id
 APP_LINK="https://chatbot-and-linkedin-jobs-apply.up.railway.app/"
 
 # Document chunking
-DOCUMENTS_CHUNK_SIZE = 1500
+DOCUMENTS_CHUNK_SIZE = 2500
 DOCUMENTS_CHUNK_OVERLAP = 250
 
 # Embedding chunk size
 CHUNK_SIZE_EMBEDDINGS = 100
 
 # CHAT HISTORY STORAGE
-MAX_TOKENS_CHAT_HISTORY = 1500
+MAX_TOKENS_CHAT_HISTORY = 1700
 
 # Logging and storage
 LOG_BASE = "logs/chatbot"
@@ -23,7 +23,7 @@ LOTTIE_FILE_PATH = "components/main_ui/Animation2.json"
 
 # Search parameters
 SEARCH_TYPE = "similarity"  # or 'mmr', 'similarity_score_threshold'
-SEARCH_KWARGS = {"k": 5}  # e.g., "score_threshold": 0.7, "lambda_mult": 0.5
+SEARCH_KWARGS = {"k": 15}  # e.g., "score_threshold": 0.7, "lambda_mult": 0.5
 
 # Metadata dictionary
 METADATA = {"session_id": get_session_id()}
