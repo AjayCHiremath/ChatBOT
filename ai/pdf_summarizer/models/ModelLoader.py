@@ -31,6 +31,7 @@ def get_model(model_work="question_reframer", log_base="logs/chatbot/", echo=Fal
             model=model_name,
             api_key=os.getenv("TOGETHER_API_KEY") if "user_api_key" not in st.session_state else st.session_state.user_api_key,
             # max_tokens=MODEL_MAX_TOKENS,
+            
             temperature=0.7,
             streaming=False,
             max_retries=3,
